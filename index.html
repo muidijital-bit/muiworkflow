@@ -42,10 +42,14 @@
         }
 
         /* Custom Dark Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #09090b; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        /* Hide scrollbar for horizontal swipe areas */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Chart Container */
         .chart-container {
@@ -58,9 +62,9 @@
 
         /* Glassmorphism Utilities */
         .glass-panel {
-            background: rgba(24, 24, 27, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -132,21 +136,6 @@
         }
 
         /* Tooltip & Terminology Styles */
-        #global-tooltip {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            max-width: 260px;
-            background: rgba(9, 9, 11, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 14px;
-            border-radius: 10px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            opacity: 0;
-            transform: translateY(8px) scale(0.95);
-            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
         .term {
             cursor: help;
             border-bottom: 1px dashed rgba(161, 161, 170, 0.5); /* zinc-400 */
@@ -157,20 +146,62 @@
             border-bottom-color: #34d399; /* emerald-400 */
             color: #34d399;
         }
+
+        #global-tooltip {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            background: rgba(9, 9, 11, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 10px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        /* Mobile Tooltip positioning */
+        @media (max-width: 767px) {
+            #global-tooltip {
+                left: 5% !important;
+                right: 5% !important;
+                top: auto !important;
+                bottom: 85px !important; /* Above mobile nav */
+                width: 90%;
+                transform: translateY(10px);
+            }
+            #global-tooltip.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Desktop Tooltip positioning */
+        @media (min-width: 768px) {
+            #global-tooltip {
+                max-width: 260px;
+                transform: translateY(8px) scale(0.95);
+            }
+            #global-tooltip.active {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
-<body class="flex flex-col md:flex-row min-h-screen text-zinc-300 font-sans selection:bg-white selection:text-black pb-20 md:pb-0">
+<body class="flex flex-col md:flex-row min-h-screen text-zinc-300 font-sans selection:bg-white selection:text-black pb-24 md:pb-0">
 
     <!-- Desktop Sidebar / Mobile Top Header -->
     <aside class="w-full md:w-72 glass-panel flex-shrink-0 z-50 fixed md:sticky top-0 md:h-screen flex flex-row md:flex-col justify-between md:justify-start border-b md:border-b-0 md:border-r border-white/5">
-        <div class="p-6 flex items-center md:items-start md:flex-col gap-4 w-full justify-between md:justify-start">
+        <div class="p-4 md:p-6 flex items-center md:items-start md:flex-col gap-4 w-full justify-between md:justify-start">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white text-black rounded-sm flex items-center justify-center font-display font-bold text-lg tracking-tighter">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-white text-black rounded-sm flex items-center justify-center font-display font-bold text-base md:text-lg tracking-tighter">
                     OS
                 </div>
                 <div>
-                    <h1 class="text-xl font-display font-bold text-white tracking-tight leading-none">AGENCY OS</h1>
-                    <p class="text-[10px] text-zinc-500 mt-1 uppercase tracking-[0.2em] font-medium">Command Center</p>
+                    <h1 class="text-lg md:text-xl font-display font-bold text-white tracking-tight leading-none">AGENCY OS</h1>
+                    <p class="text-[9px] md:text-[10px] text-zinc-500 mt-1 uppercase tracking-[0.2em] font-medium">Command Center</p>
                 </div>
             </div>
             <!-- Status Dot -->
@@ -201,7 +232,7 @@
     </aside>
 
     <!-- Mobile Bottom Navigation -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/5 z-50 flex justify-around px-1 py-2 pb-safe overflow-x-auto">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t border-white/5 z-50 flex justify-around px-1 py-2 pb-safe overflow-x-auto shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
         <button onclick="switchTab('felsefe')" id="nav-mob-felsefe" class="nav-item active flex-shrink-0 flex flex-col items-center gap-1 p-2 text-zinc-400 w-16 rounded-lg">
             <span class="text-xl leading-none">✦</span>
             <span class="text-[9px] uppercase tracking-wider font-medium">Paradigma</span>
@@ -225,43 +256,61 @@
     </nav>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-6 md:p-12 lg:p-16 overflow-y-auto w-full max-w-7xl mx-auto mt-20 md:mt-0">
+    <main class="flex-1 p-5 md:p-12 lg:p-16 overflow-y-auto w-full max-w-7xl mx-auto mt-20 md:mt-0">
         
         <!-- SECTION 1: Paradigma (Felsefe) -->
         <section id="sec-felsefe" class="content-section block fade-in">
-            <header class="mb-12">
+            <header class="mb-10 md:mb-12">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] text-zinc-300 tracking-[0.2em] uppercase mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
                     Sistem Felsefesi
                 </div>
-                <h2 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white tracking-tight mb-6 glow-text">
+                <h2 class="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white tracking-tight mb-4 md:mb-6 glow-text">
                     Sıfır Kesinti.<br/>Maksimum Kapasite.
                 </h2>
-                <p class="text-lg md:text-xl text-zinc-400 max-w-3xl leading-relaxed font-light">
-                    Kişisel inisiyatifler yerini sistematik akışa bırakır. Ajans içerisindeki herkes (Tasarım, Web, Ads, İçerik) <strong class="text-white font-medium">Kesintisiz İş Akışı (<span class="term" data-term="assembly-line">Assembly Line</span>)</strong> modelinde net bir şekilde tanımlanmış rollerle çalışır.
+                <p class="text-base md:text-lg lg:text-xl text-zinc-400 max-w-3xl leading-relaxed font-light">
+                    Kişisel inisiyatifler yerini sistematik akışa bırakır. Ajans içerisindeki herkes (Tasarım, Web, Ads, İçerik) <strong class="text-white font-medium">Kesintisiz İş Akışı (<span class="term whitespace-nowrap" data-term="assembly-line">Assembly Line</span>)</strong> modelinde net bir şekilde tanımlanmış rollerle çalışır.
                 </p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 mb-10">
+                <div class="bento-card rounded-2xl p-6 md:p-8 relative overflow-hidden group">
                     <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">✕</div>
-                    <div class="text-red-500 text-sm font-mono tracking-widest mb-4">REAKTİF MODEL // PING-PONG</div>
-                    <h3 class="text-2xl font-display font-bold text-white mb-6">Kaos & Kilitlenme</h3>
-                    <ul class="space-y-4 text-zinc-400">
-                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> Sürekli bölünen odak ve departmanlar arası karışıklık (<span class="term" data-term="ping-pong">Ping-Pong</span>).</li>
-                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> Üretim ekibinin müşteri iletişimiyle vakit ve enerji kaybetmesi.</li>
-                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> "Kritik" etiketli işlerin asıl planlı büyümeyi baltalaması.</li>
+                    <div class="text-red-500 text-xs md:text-sm font-mono tracking-widest mb-4">REAKTİF MODEL // PING-PONG</div>
+                    <h3 class="text-xl md:text-2xl font-display font-bold text-white mb-6">Kaos & Kilitlenme</h3>
+                    <ul class="space-y-4 text-zinc-400 text-sm md:text-base">
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1 shrink-0">⨯</span> 
+                            <span class="leading-relaxed">Sürekli bölünen odak ve departmanlar arası karışıklık (<span class="term whitespace-nowrap" data-term="ping-pong">Ping-Pong</span>).</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1 shrink-0">⨯</span> 
+                            <span class="leading-relaxed">Üretim ekibinin müşteri iletişimiyle vakit ve enerji kaybetmesi.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-red-500 mt-1 shrink-0">⨯</span> 
+                            <span class="leading-relaxed">"Kritik" etiketli işlerin asıl planlı büyümeyi baltalaması.</span>
+                        </li>
                     </ul>
                 </div>
-                <div class="bento-card rounded-2xl p-8 relative overflow-hidden border-zinc-700/50 bg-[#0c0c0e]">
+                <div class="bento-card rounded-2xl p-6 md:p-8 relative overflow-hidden border-zinc-700/50 bg-[#0c0c0e]">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none"></div>
                     <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">✓</div>
-                    <div class="text-indigo-400 text-sm font-mono tracking-widest mb-4">PROAKTİF MODEL // BATCHING</div>
-                    <h3 class="text-2xl font-display font-bold text-white mb-6">Sistematik Akış</h3>
-                    <ul class="space-y-4 text-zinc-300">
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Roller net ayrışır: <span class="term" data-term="lead">Lead</span>, Dev, <span class="term" data-term="backup">Backup</span>, Asistan.</li>
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Üretim ekibinin tam izolasyonu ve "<span class="term" data-term="deep-work">Deep Work</span>" odaklanması.</li>
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Filtreler önceliğe değil, "Çalışma Alanına" odaklanır (<span class="term" data-term="batching">Batching</span>).</li>
+                    <div class="text-indigo-400 text-xs md:text-sm font-mono tracking-widest mb-4">PROAKTİF MODEL // BATCHING</div>
+                    <h3 class="text-xl md:text-2xl font-display font-bold text-white mb-6">Sistematik Akış</h3>
+                    <ul class="space-y-4 text-zinc-300 text-sm md:text-base">
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-400 mt-1 shrink-0">✔</span> 
+                            <span class="leading-relaxed">Roller net ayrışır: <span class="term whitespace-nowrap" data-term="lead">Lead</span>, Dev, <span class="term whitespace-nowrap" data-term="backup">Backup</span>, Asistan.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-400 mt-1 shrink-0">✔</span> 
+                            <span class="leading-relaxed">Üretim ekibinin tam izolasyonu ve "<span class="term whitespace-nowrap" data-term="deep-work">Deep Work</span>" odaklanması.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-400 mt-1 shrink-0">✔</span> 
+                            <span class="leading-relaxed">Filtreler önceliğe değil, "Çalışma Alanına" odaklanır (<span class="term whitespace-nowrap" data-term="batching">Batching</span>).</span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -269,44 +318,45 @@
 
         <!-- SECTION 2: Aylık Sprint Döngüsü -->
         <section id="sec-dongu" class="content-section hidden fade-in">
-            <header class="mb-12">
+            <header class="mb-10 md:mb-12">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] text-zinc-300 tracking-[0.2em] uppercase mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                     Operasyonel Akış
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Aylık Sprint Döngüsü (Task Matrix)</h2>
-                <p class="text-zinc-400 text-lg max-w-2xl font-light">
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-4 md:mb-6">Aylık Sprint Döngüsü (Task Matrix)</h2>
+                <p class="text-base md:text-lg text-zinc-400 max-w-2xl font-light">
                     Ekibin tüm rolleri, 4 kesintisiz evrede birbiriyle uyumlu çalışacak şekilde ayarlanmıştır.
                 </p>
             </header>
 
-            <div class="flex flex-wrap md:flex-nowrap gap-2 md:gap-4 mb-8">
-                <button onclick="selectWeek(1)" id="btn-week-1" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
-                    <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 01</div>
-                    <div class="font-display font-bold text-white">Strateji</div>
+            <!-- Responsive Grid for Week Selectors -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+                <button onclick="selectWeek(1)" id="btn-week-1" class="week-selector bg-[#0a0a0a] border border-white/10 p-3 md:p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
+                    <div class="text-[10px] md:text-xs text-zinc-500 font-mono mb-1 md:mb-2">PHASE 01</div>
+                    <div class="font-display font-bold text-white text-sm md:text-base">Strateji</div>
                 </button>
-                <button onclick="selectWeek(2)" id="btn-week-2" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
-                    <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 02</div>
-                    <div class="font-display font-bold text-white">Üretim</div>
+                <button onclick="selectWeek(2)" id="btn-week-2" class="week-selector bg-[#0a0a0a] border border-white/10 p-3 md:p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
+                    <div class="text-[10px] md:text-xs text-zinc-500 font-mono mb-1 md:mb-2">PHASE 02</div>
+                    <div class="font-display font-bold text-white text-sm md:text-base">Üretim</div>
                 </button>
-                <button onclick="selectWeek(3)" id="btn-week-3" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
-                    <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 03</div>
-                    <div class="font-display font-bold text-white">QA / Revize</div>
+                <button onclick="selectWeek(3)" id="btn-week-3" class="week-selector bg-[#0a0a0a] border border-white/10 p-3 md:p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
+                    <div class="text-[10px] md:text-xs text-zinc-500 font-mono mb-1 md:mb-2">PHASE 03</div>
+                    <div class="font-display font-bold text-white text-sm md:text-base">QA / Revize</div>
                 </button>
-                <button onclick="selectWeek(4)" id="btn-week-4" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
-                    <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 04</div>
-                    <div class="font-display font-bold text-white">Yayın / Optimize</div>
+                <button onclick="selectWeek(4)" id="btn-week-4" class="week-selector bg-[#0a0a0a] border border-white/10 p-3 md:p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
+                    <div class="text-[10px] md:text-xs text-zinc-500 font-mono mb-1 md:mb-2">PHASE 04</div>
+                    <div class="font-display font-bold text-white text-sm md:text-base">Yayın / Optimize</div>
                 </button>
             </div>
 
-            <div class="bento-card rounded-2xl p-6 md:p-10 mb-12 min-h-[350px] relative overflow-hidden" id="week-content-area"></div>
+            <div class="bento-card rounded-2xl p-5 md:p-10 mb-12 min-h-[350px] relative overflow-hidden" id="week-content-area"></div>
 
-            <div class="mt-16">
-                <div class="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
-                    <h3 class="text-xl font-display font-bold text-white">Kapasite Dağılım Matrisi</h3>
-                    <span class="text-xs font-mono text-zinc-500 border border-white/10 px-2 py-1 rounded">DATA VISUALIZATION</span>
+            <div class="mt-12 md:mt-16">
+                <div class="flex items-center justify-between mb-6 md:mb-8 border-b border-white/10 pb-4">
+                    <h3 class="text-lg md:text-xl font-display font-bold text-white">Kapasite Dağılım Matrisi</h3>
+                    <span class="text-[10px] md:text-xs font-mono text-zinc-500 border border-white/10 px-2 py-1 rounded">DATA VISUALIZATION</span>
                 </div>
-                <div class="bento-card p-6 rounded-2xl">
+                <div class="bento-card p-4 md:p-6 rounded-2xl">
                     <div class="chart-container">
                         <canvas id="effortChart"></canvas>
                     </div>
@@ -316,42 +366,42 @@
 
         <!-- SECTION 3: Yetenek ve Katmanlar -->
         <section id="sec-yetenek" class="content-section hidden fade-in">
-            <header class="mb-12">
+            <header class="mb-10 md:mb-12">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] text-zinc-300 tracking-[0.2em] uppercase mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
                     Organizasyon Mimarisi
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Ekip & Katman İzolasyonu</h2>
-                <p class="text-zinc-400 text-lg max-w-2xl font-light">
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-4 md:mb-6">Ekip & Katman İzolasyonu</h2>
+                <p class="text-base md:text-lg text-zinc-400 max-w-2xl font-light">
                     Tasarım, operasyon ve yazılım alanındaki kesin hiyerarşi. Liderler ve destek ekipleri tanımlanmıştır.
                 </p>
             </header>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
                 <div class="lg:col-span-5 flex flex-col gap-3">
-                    <button onclick="showLayerDetails(1)" id="layer-btn-1" class="layer-btn active w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
+                    <button onclick="showLayerDetails(1)" id="layer-btn-1" class="layer-btn active w-full text-left bg-[#0a0a0a] p-5 md:p-6 rounded-xl relative overflow-hidden group">
                         <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 01</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Strateji, Karar & Müşteri Hattı</h3>
-                        <p class="text-sm text-zinc-400">Sefa & Sema</p>
+                        <h3 class="text-lg md:text-xl font-display font-bold text-white mb-1">Strateji, Karar & Müşteri Hattı</h3>
+                        <p class="text-xs md:text-sm text-zinc-400">Sefa & Sema</p>
                     </button>
-                    <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-6 bg-white"></div></div>
-                    <button onclick="showLayerDetails(2)" id="layer-btn-2" class="layer-btn w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
+                    <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-4 md:h-6 bg-white"></div></div>
+                    <button onclick="showLayerDetails(2)" id="layer-btn-2" class="layer-btn w-full text-left bg-[#0a0a0a] p-5 md:p-6 rounded-xl relative overflow-hidden group">
                         <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 02</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Yazılım Liderliği & Operasyon</h3>
-                        <p class="text-sm text-zinc-400">Merve (Yazılım Lead) & Ahmet</p>
+                        <h3 class="text-lg md:text-xl font-display font-bold text-white mb-1">Yazılım Liderliği & Operasyon</h3>
+                        <p class="text-xs md:text-sm text-zinc-400">Merve (Yazılım Lead) & Ahmet</p>
                     </button>
-                    <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-6 bg-white"></div></div>
-                    <button onclick="showLayerDetails(3)" id="layer-btn-3" class="layer-btn w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
+                    <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-4 md:h-6 bg-white"></div></div>
+                    <button onclick="showLayerDetails(3)" id="layer-btn-3" class="layer-btn w-full text-left bg-[#0a0a0a] p-5 md:p-6 rounded-xl relative overflow-hidden group">
                         <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 03</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Saf Üretim & Geliştirme</h3>
-                        <p class="text-sm text-zinc-400">Cemal & Mehmet</p>
+                        <h3 class="text-lg md:text-xl font-display font-bold text-white mb-1">Saf Üretim & Geliştirme</h3>
+                        <p class="text-xs md:text-sm text-zinc-400">Cemal & Mehmet</p>
                     </button>
                 </div>
                 <div class="lg:col-span-7">
-                    <div class="bento-card h-full rounded-2xl p-8 lg:p-10" id="layer-detail-area"></div>
+                    <div class="bento-card h-full rounded-2xl p-6 lg:p-10" id="layer-detail-area"></div>
                 </div>
             </div>
         </section>
@@ -363,68 +413,68 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Live Data
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-4">Canlı Operasyon Matrisi</h2>
-                <p class="text-zinc-400 text-lg max-w-3xl font-light">
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-4">Canlı Operasyon Matrisi</h2>
+                <p class="text-base md:text-lg text-zinc-400 max-w-3xl font-light">
                     Markalar ve ihtiyaçları sistemin çalışma alanlarına (Sosyal Medya, Ads, Web) göre filtrelenerek ekiplere paylaştırılır.
                 </p>
             </header>
 
-            <!-- Filters based on Working Areas -->
-            <div class="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-6">
-                <button onclick="filterClients('all')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all">
+            <!-- Filters with Horizontal Swipe for Mobile -->
+            <div class="flex overflow-x-auto hide-scrollbar snap-x gap-2 mb-8 border-b border-white/10 pb-4 w-full">
+                <button onclick="filterClients('all')" class="shrink-0 snap-start px-4 md:px-5 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all">
                     Tüm Markalar (23)
                 </button>
-                <button onclick="filterClients('Sosyal Medya')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-indigo-500/50 hover:text-indigo-400 transition-all flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Tasarım & Sosyal Medya
+                <button onclick="filterClients('Sosyal Medya')" class="shrink-0 snap-start px-4 md:px-5 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-indigo-500/50 hover:text-indigo-400 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Tasarım & Sosyal
                 </button>
-                <button onclick="filterClients('Reklam & SEO')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 transition-all flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Dijital Reklam & SEO
+                <button onclick="filterClients('Reklam & SEO')" class="shrink-0 snap-start px-4 md:px-5 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Reklam & SEO
                 </button>
-                <button onclick="filterClients('Web')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-orange-500/50 hover:text-orange-400 transition-all flex items-center gap-2">
+                <button onclick="filterClients('Web')" class="shrink-0 snap-start px-4 md:px-5 py-2 md:py-2.5 rounded-lg text-xs md:text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-orange-500/50 hover:text-orange-400 transition-all flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-orange-500"></span> Web Geliştirme
                 </button>
             </div>
 
             <!-- Client Grid -->
-            <div id="clients-grid" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div id="clients-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">
                 <!-- Clients will be injected here via JS -->
             </div>
         </section>
 
         <!-- SECTION 5: Altın Kurallar -->
         <section id="sec-kurallar" class="content-section hidden fade-in">
-            <header class="mb-12">
+            <header class="mb-10 md:mb-12">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-[10px] text-red-400 tracking-[0.2em] uppercase mb-6">
                     <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
                     Strict Protocols
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Sistem Güvenlik Protokolü</h2>
-                <p class="text-zinc-400 text-lg max-w-2xl font-light">
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-4 md:mb-6">Sistem Güvenlik Protokolü</h2>
+                <p class="text-base md:text-lg text-zinc-400 max-w-2xl font-light">
                     Fabrika düzeninin çökmemesi için bu 3 kural ajans anayasası olarak kabul edilir.
                 </p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
+                <div class="bento-card rounded-2xl p-6 md:p-8 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">01</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">Briefsiz İş Yasası</h3>
+                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-4 md:mt-8 relative z-10">Briefsiz İş Yasası</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
                         Sema'dan onaylı içerik brief'i veya Sefa'dan onaylı bütçe brief'i olmadan üretim (Tasarım/Web) ekibi asla işleme başlamaz.
                     </p>
                 </div>
-                <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
+                <div class="bento-card rounded-2xl p-6 md:p-8 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">02</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">Müşteri Filtresi</h3>
+                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-4 md:mt-8 relative z-10">Müşteri Filtresi</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
                         Müşterilerin tasarım/yazılım katmanına (Cemal, Mehmet, Merve) direkt ulaşması yasaktır. İletişimi Sefa kurar.
                     </p>
                 </div>
-                <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
+                <div class="bento-card rounded-2xl p-6 md:p-8 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">03</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10"><span class="term" data-term="asenkron">Asenkron</span> İnceleme</h3>
+                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-4 md:mt-8 relative z-10"><span class="term whitespace-nowrap" data-term="asenkron">Asenkron</span> İnceleme</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
                         Tasarımlar veya kodlar anında atılıp onay istenmez. Revizyon süreçleri leadler (Merve, Sema) tarafından topluca değerlendirilir.
                     </p>
@@ -466,16 +516,16 @@
                     output: "Mesai bitiminde taslak briefler ve kodlama altyapıları hazır olur.",
                     borderColor: "border-white",
                     tasks: [
-                        { role: "Sefa (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerini yönetir. SEO ve Reklam bütçe analizlerini yapar." },
-                        { role: "Sema (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Tasarım stratejilerini belirler, içerik ve prodüksiyon brieflerini kilitler." },
-                        { role: "Merve (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Yazılım ekibini lead eder, aylık dev-<span class=\"term\" data-term=\"sprint\">sprint</span> planlarını oluşturur. Sema'ya destek (<span class=\"term\" data-term=\"backup\">backup</span>) verir." },
-                        { role: "Ahmet", desc: "Sefa'ya asiste ederek ham veri çekimlerini (raporlama) ve <span class=\"term\" data-term=\"running\">running</span> takiplerini başlatır." },
+                        { role: "Sefa (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerini yönetir. SEO ve Reklam bütçe analizlerini yapar." },
+                        { role: "Sema (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Tasarım stratejilerini belirler, içerik ve prodüksiyon brieflerini kilitler." },
+                        { role: "Merve (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Yazılım ekibini lead eder, aylık dev-<span class=\"term whitespace-nowrap\" data-term=\"sprint\">sprint</span> planlarını oluşturur. Sema'ya destek (<span class=\"term whitespace-nowrap\" data-term=\"backup\">backup</span>) verir." },
+                        { role: "Ahmet", desc: "Sefa'ya asiste ederek ham veri çekimlerini (raporlama) ve <span class=\"term whitespace-nowrap\" data-term=\"running\">running</span> takiplerini başlatır." },
                         { role: "Cemal & Mehmet", desc: "Briefler hazırlanırken kreatif tasarım şablonlarının teknik altyapısı ve kodlama ortamları kurulur." }
                     ]
                 },
                 2: {
                     phase: "02",
-                    title: "<span class=\"term text-white\" data-term=\"deep-work\">Deep Work</span> (Üretim)",
+                    title: "<span class=\"term text-white whitespace-nowrap\" data-term=\"deep-work\">Deep Work</span> (Üretim)",
                     goal: "Stratejiler üzerinden izole ve gürültüsüz üretim.",
                     output: "İlk tasarımlar, kurumsal kimlikler ve web iskeletleri çıkarılır.",
                     borderColor: "border-zinc-500",
@@ -483,19 +533,19 @@
                         { role: "Sema & Cemal", desc: "Sema ağırlıklı tasarım/prodüksiyon üretir, Cemal ile birlikte kreatif tasarım şablonlarını üretir ve çoğaltır." },
                         { role: "Merve & Mehmet", desc: "Merve'nin lead'liğinde Mehmet kodlamayı gerçekleştirir, backend/frontend inşası sürer." },
                         { role: "Sefa", desc: "Reklam kampanyalarının panele kurulumu ve SEO on-page stratejilerinin tespiti." },
-                        { role: "Ahmet", desc: "Üretilen içerik metinlerinin takibi ve operasyonel <span class=\"term\" data-term=\"running\">running</span> devam eder." }
+                        { role: "Ahmet", desc: "Üretilen içerik metinlerinin takibi ve operasyonel <span class=\"term whitespace-nowrap\" data-term=\"running\">running</span> devam eder." }
                     ]
                 },
                 3: {
                     phase: "03",
-                    title: "<span class=\"term text-white\" data-term=\"qa\">QA</span> & Revizyon",
+                    title: "<span class=\"term text-white whitespace-nowrap\" data-term=\"qa\">QA</span> & Revizyon",
                     goal: "Mükemmelleştirme, hataları ayıklama ve onay alma.",
-                    output: "Tüm işler 'Yayına Hazır' (Ready to <span class=\"term\" data-term=\"deploy\">Deploy</span>) konumundadır.",
+                    output: "Tüm işler 'Yayına Hazır' (Ready to <span class=\"term whitespace-nowrap\" data-term=\"deploy\">Deploy</span>) konumundadır.",
                     borderColor: "border-zinc-700",
                     tasks: [
-                        { role: "Sema (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Üretilen tüm tasarımların kalite kontrolü (<span class=\"term\" data-term=\"qa\">QA</span>), revize isteklerinin Cemal'e iletilmesi." },
-                        { role: "Merve (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Mehmet'in kodlarının <span class=\"term\" data-term=\"qa\">QA</span> testleri. Sema'ya UI/UX tarafında <span class=\"term\" data-term=\"backup\">backup</span>." },
-                        { role: "Sefa (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Müşteri onay toplantıları ve reklam kurulum onaylarının alınması." },
+                        { role: "Sema (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Üretilen tüm tasarımların kalite kontrolü (<span class=\"term whitespace-nowrap\" data-term=\"qa\">QA</span>), revize isteklerinin Cemal'e iletilmesi." },
+                        { role: "Merve (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Mehmet'in kodlarının <span class=\"term whitespace-nowrap\" data-term=\"qa\">QA</span> testleri. Sema'ya UI/UX tarafında <span class=\"term whitespace-nowrap\" data-term=\"backup\">backup</span>." },
+                        { role: "Sefa (<span class=\"term whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Müşteri onay toplantıları ve reklam kurulum onaylarının alınması." },
                         { role: "Cemal & Mehmet", desc: "Lead'lerden gelen spesifik teknik ve tasarımsal revizyonları uygularlar." }
                     ]
                 },
@@ -507,8 +557,8 @@
                     borderColor: "border-zinc-800",
                     tasks: [
                         { role: "Ahmet", desc: "Onaylı tüm içeriklerin panellere yüklenmesi ve takvimlendirilmesi (Asistan/Takip)." },
-                        { role: "Sefa", desc: "Reklam optimizasyonları, bütçe <span class=\"term\" data-term=\"scale\">scale</span> işlemleri ve dönüşüm analizi." },
-                        { role: "Merve & Mehmet", desc: "Yazılımların canlı sunuculara <span class=\"term\" data-term=\"deploy\">deploy</span> edilmesi ve canlı testleri." },
+                        { role: "Sefa", desc: "Reklam optimizasyonları, bütçe <span class=\"term whitespace-nowrap\" data-term=\"scale\">scale</span> işlemleri ve dönüşüm analizi." },
+                        { role: "Merve & Mehmet", desc: "Yazılımların canlı sunuculara <span class=\"term whitespace-nowrap\" data-term=\"deploy\">deploy</span> edilmesi ve canlı testleri." },
                         { role: "Sema & Cemal", desc: "Yayınlanan prodüksiyonların geri dönüşlerinin okunup yeni ay şablonlarına aktarımı." }
                     ]
                 }
@@ -519,26 +569,26 @@
                     title: "Strateji, Karar & Müşteri Hattı",
                     mission: "Markaların genel performansını, bütçesini, marka dilini ve kreatif vizyonunu dikte etmek.",
                     roles: [
-                        { name: "Sefa (Müşteri, SEO & Ads <span class=\"term text-white font-bold\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerinin yüzü. SEO ve Reklam yönetimini lead eder. Ahmet'i koordine eder." },
-                        { name: "Sema (Tasarım & Strateji <span class=\"term text-white font-bold\" data-term=\"lead\">Lead</span>)", desc: "Ağırlıklı olarak tasarım, prodüksiyon ve içerik üretiminin sahibidir. Cemal ile üretim kalitesini yönetir." }
+                        { name: "Sefa (Müşteri, SEO & Ads <span class=\"term text-white font-bold whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerinin yüzü. SEO ve Reklam yönetimini lead eder. Ahmet'i koordine eder." },
+                        { name: "Sema (Tasarım & Strateji <span class=\"term text-white font-bold whitespace-nowrap\" data-term=\"lead\">Lead</span>)", desc: "Ağırlıklı olarak tasarım, prodüksiyon ve içerik üretiminin sahibidir. Cemal ile üretim kalitesini yönetir." }
                     ]
                 },
                 2: {
                     number: "02",
                     title: "Yazılım Liderliği & Operasyon Takip",
-                    mission: "Yazılım departmanına liderlik etmek ve yöneticilerin hamallığını alarak operasyonu (<span class=\"term text-zinc-300\" data-term=\"running\">running</span>) asiste etmek.",
+                    mission: "Yazılım departmanına liderlik etmek ve yöneticilerin hamallığını alarak operasyonu (<span class=\"term text-zinc-300 whitespace-nowrap\" data-term=\"running\">running</span>) asiste etmek.",
                     roles: [
-                        { name: "Merve (Yazılım Ekibi Lideri & <span class=\"term text-white font-bold\" data-term=\"backup\">Backup</span>)", desc: "Yazılım ekibini ve geliştirme süreçlerini (Mehmet ile birlikte) bizzat <span class=\"term\" data-term=\"lead\">lead</span> eder. Tasarım/Üretim kilitlendiğinde Sema'ya operasyonel <span class=\"term\" data-term=\"backup\">backup</span> olur." },
-                        { name: "Ahmet (Ops. Asistanı)", desc: "Sefa'nın ekibindedir. <span class=\"term\" data-term=\"running\">Running</span>, raporlama ve içerik takiplerini asiste ederek süreci hızlandırır." }
+                        { name: "Merve (Yazılım Ekibi Lideri & <span class=\"term text-white font-bold whitespace-nowrap\" data-term=\"backup\">Backup</span>)", desc: "Yazılım ekibini ve geliştirme süreçlerini (Mehmet ile birlikte) bizzat <span class=\"term whitespace-nowrap\" data-term=\"lead\">lead</span> eder. Tasarım/Üretim kilitlendiğinde Sema'ya operasyonel <span class=\"term whitespace-nowrap\" data-term=\"backup\">backup</span> olur." },
+                        { name: "Ahmet (Ops. Asistanı)", desc: "Sefa'nın ekibindedir. <span class=\"term whitespace-nowrap\" data-term=\"running\">Running</span>, raporlama ve içerik takiplerini asiste ederek süreci hızlandırır." }
                     ]
                 },
                 3: {
                     number: "03",
                     title: "Saf Üretim & Geliştirme",
-                    mission: "<span class=\"term text-zinc-300\" data-term=\"deep-work\">Deep Work</span> ile direktifleri dijital varlıklara ve kodlara çevirmek.",
+                    mission: "<span class=\"term text-zinc-300 whitespace-nowrap\" data-term=\"deep-work\">Deep Work</span> ile direktifleri dijital varlıklara ve kodlara çevirmek.",
                     roles: [
                         { name: "Cemal (Kreatif Tasarımcı)", desc: "Sema ile birlikte kreatif tasarım şablonlarının üretilmesi ve markalara göre çoğaltılması ile ilgilenir." },
-                        { name: "Mehmet (Developer)", desc: "Merve'nin ekibinde yazılımcı. <span class=\"term\" data-term=\"sprint\">Sprintlerdeki</span> web projelerinin backend ve frontend kodlamalarını yapar." }
+                        { name: "Mehmet (Developer)", desc: "Merve'nin ekibinde yazılımcı. <span class=\"term whitespace-nowrap\" data-term=\"sprint\">Sprintlerdeki</span> web projelerinin backend ve frontend kodlamalarını yapar." }
                     ]
                 }
             },
@@ -594,6 +644,7 @@
             if(tabId === 'operasyon') {
                 renderClients('all');
             }
+            window.scrollTo(0,0);
         }
 
         function selectWeek(weekNum) {
@@ -612,28 +663,28 @@
             const data = reportData.weeks[currentWeek];
             const container = document.getElementById('week-content-area');
             let tasksHtml = data.tasks.map(task => `
-                <div class="flex flex-col md:flex-row md:items-start p-4 bg-[#050505] rounded-xl border border-white/5 hover:border-white/10 transition-colors">
-                    <div class="font-display font-bold text-white md:w-48 flex-shrink-0 mb-2 md:mb-0">${task.role}</div>
-                    <div class="text-zinc-400 text-sm pl-0 md:pl-4 md:border-l border-white/10 leading-relaxed">${task.desc}</div>
+                <div class="flex flex-col lg:flex-row lg:items-start p-4 md:p-5 bg-[#050505] rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                    <div class="font-display font-bold text-white lg:w-48 shrink-0 mb-2 lg:mb-0 text-sm md:text-base">${task.role}</div>
+                    <div class="text-zinc-400 text-xs md:text-sm pl-0 lg:pl-5 lg:border-l border-white/10 leading-relaxed">${task.desc}</div>
                 </div>
             `).join('');
 
             container.innerHTML = `
                 <div class="fade-in">
-                    <div class="text-[10px] font-mono text-zinc-500 tracking-widest mb-2">PHASE ${data.phase}</div>
-                    <h3 class="text-3xl font-display font-bold text-white mb-8">${data.title}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="text-[10px] md:text-xs font-mono text-zinc-500 tracking-widest mb-2">PHASE ${data.phase}</div>
+                    <h3 class="text-2xl md:text-3xl font-display font-bold text-white mb-6 md:mb-8">${data.title}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 mb-8">
                         <div>
-                            <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1 uppercase">Objective</div>
-                            <p class="text-sm text-zinc-300">${data.goal}</p>
+                            <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1 md:mb-2 uppercase">Objective</div>
+                            <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">${data.goal}</p>
                         </div>
                         <div>
-                            <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1 uppercase">Expected Output</div>
-                            <p class="text-sm text-white font-medium">${data.output}</p>
+                            <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1 md:mb-2 uppercase">Expected Output</div>
+                            <p class="text-xs md:text-sm text-white font-medium leading-relaxed">${data.output}</p>
                         </div>
                     </div>
                     <div class="h-px w-full bg-white/10 mb-6"></div>
-                    <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-4 uppercase">Task Matrix</div>
+                    <div class="text-[10px] md:text-xs text-zinc-500 font-mono tracking-widest mb-4 uppercase">Task Matrix</div>
                     <div class="space-y-3">${tasksHtml}</div>
                 </div>
             `;
@@ -647,23 +698,23 @@
             const container = document.getElementById('layer-detail-area');
 
             let rolesHtml = data.roles.map(role => `
-                <div class="p-6 bg-[#050505] rounded-xl border border-white/5 mb-4 group hover:border-white/20 transition-colors">
-                    <h5 class="font-display font-bold text-white mb-2">${role.name}</h5>
-                    <p class="text-zinc-400 text-sm leading-relaxed">${role.desc}</p>
+                <div class="p-5 md:p-6 bg-[#050505] rounded-xl border border-white/5 mb-4 group hover:border-white/20 transition-colors">
+                    <h5 class="text-base md:text-lg font-display font-bold text-white mb-2">${role.name}</h5>
+                    <p class="text-zinc-400 text-xs md:text-sm leading-relaxed">${role.desc}</p>
                 </div>
             `).join('');
 
             container.innerHTML = `
                 <div class="fade-in h-full flex flex-col">
-                    <div class="mb-8">
-                        <div class="text-[10px] font-mono text-zinc-500 tracking-widest mb-2">KATMAN ${data.number}</div>
-                        <h4 class="text-3xl font-display font-bold text-white mb-4">${data.title}</h4>
+                    <div class="mb-6 md:mb-8">
+                        <div class="text-[10px] md:text-xs font-mono text-zinc-500 tracking-widest mb-2">KATMAN ${data.number}</div>
+                        <h4 class="text-2xl md:text-3xl font-display font-bold text-white mb-4">${data.title}</h4>
                         <div class="p-4 bg-white/5 rounded-lg border border-white/10 border-l-2 border-l-white">
-                            <p class="text-sm text-zinc-300">${data.mission}</p>
+                            <p class="text-xs md:text-sm text-zinc-300 leading-relaxed">${data.mission}</p>
                         </div>
                     </div>
                     <div class="flex-1">
-                        <div class="text-[10px] font-mono text-zinc-500 tracking-widest mb-4 uppercase">Sorumluluklar</div>
+                        <div class="text-[10px] md:text-xs font-mono text-zinc-500 tracking-widest mb-4 uppercase">Sorumluluklar</div>
                         ${rolesHtml}
                     </div>
                 </div>
@@ -705,7 +756,6 @@
             });
 
             container.innerHTML = filteredClients.map((client, index) => {
-                // Determine sections to display
                 const isAll = client.services.some(s => s.toLowerCase().includes('tüm'));
                 const hasSocial = isAll || client.services.some(s => s.toLowerCase().includes('sosyal') || s.toLowerCase().includes('kimlik'));
                 const hasAds = isAll || client.services.some(s => s.toLowerCase().includes('reklam') || s.toLowerCase().includes('seo') || s.toLowerCase().includes('geo') || s.toLowerCase().includes('planlama'));
@@ -720,7 +770,7 @@
                             <div class="text-[10px] text-indigo-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Tasarım & Sosyal Medya
                             </div>
-                            <div class="text-[11px] text-zinc-400 bg-indigo-500/5 p-2 rounded-md border border-indigo-500/10">
+                            <div class="text-[10px] md:text-[11px] text-zinc-400 bg-indigo-500/5 p-2 md:p-3 rounded-md border border-indigo-500/10 leading-relaxed">
                                 <span class="text-white font-medium">Sema</span> (Strateji/Prodüksiyon) <br>
                                 <span class="text-indigo-400">Cemal</span> (Şablon/Tasarım) <br>
                                 <span class="text-zinc-500">Ahmet</span> (Takip)
@@ -735,7 +785,7 @@
                             <div class="text-[10px] text-emerald-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Dijital Reklam & SEO
                             </div>
-                            <div class="text-[11px] text-zinc-400 bg-emerald-500/5 p-2 rounded-md border border-emerald-500/10">
+                            <div class="text-[10px] md:text-[11px] text-zinc-400 bg-emerald-500/5 p-2 md:p-3 rounded-md border border-emerald-500/10 leading-relaxed">
                                 <span class="text-white font-medium">Sefa</span> (Lead/Müşteri) <br>
                                 <span class="text-emerald-400">Ahmet</span> (Running/Asiste)
                             </div>
@@ -749,7 +799,7 @@
                             <div class="text-[10px] text-orange-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Web Geliştirme
                             </div>
-                            <div class="text-[11px] text-zinc-400 bg-orange-500/5 p-2 rounded-md border border-orange-500/10">
+                            <div class="text-[10px] md:text-[11px] text-zinc-400 bg-orange-500/5 p-2 md:p-3 rounded-md border border-orange-500/10 leading-relaxed">
                                 <span class="text-white font-medium">Merve</span> (Yazılım Lead) <br>
                                 <span class="text-orange-400">Mehmet</span> (Developer) <br>
                                 <span class="text-zinc-500">Sema</span> (Backup/UI)
@@ -758,16 +808,16 @@
                 }
 
                 const svcsHtml = client.services.map(s => 
-                    `<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-zinc-300 font-mono whitespace-nowrap">${s}</span>`
+                    `<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[9px] md:text-[10px] text-zinc-300 font-mono whitespace-nowrap">${s}</span>`
                 ).join('');
 
                 return `
-                    <div class="bento-card rounded-2xl p-6 flex flex-col justify-between client-card" style="animation-delay: ${index * 0.05}s">
+                    <div class="bento-card rounded-2xl p-5 md:p-6 flex flex-col justify-between client-card" style="animation-delay: ${index * 0.05}s">
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div>
-                                    <h3 class="text-lg font-display font-bold text-white mb-1 leading-tight">${client.name}</h3>
-                                    <p class="text-xs text-zinc-500 font-mono uppercase tracking-wider">${client.sector}</p>
+                                    <h3 class="text-base md:text-lg font-display font-bold text-white mb-1.5 leading-tight">${client.name}</h3>
+                                    <p class="text-[10px] md:text-xs text-zinc-500 font-mono uppercase tracking-wider">${client.sector}</p>
                                 </div>
                             </div>
                             <div class="flex flex-wrap gap-1.5 mb-6">
@@ -784,8 +834,6 @@
 
         function initChart() {
             const ctx = document.getElementById('effortChart').getContext('2d');
-            
-            // Adjusted effort matching the new architecture
             const chartData = {
                 labels: ['Phase 01', 'Phase 02', 'Phase 03', 'Phase 04'],
                 datasets: [
@@ -796,18 +844,31 @@
             };
             Chart.defaults.color = '#a1a1aa';
             Chart.defaults.font.family = 'Inter';
+            
+            // Adjust chart options for mobile specifically
+            const isMobile = window.innerWidth < 768;
+            
             effortChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: chartData,
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'top', align: 'start', labels: { boxWidth: 10, usePointStyle: true, padding: 20 } },
+                        legend: { 
+                            position: 'top', 
+                            align: 'start', 
+                            labels: { 
+                                boxWidth: 10, 
+                                usePointStyle: true, 
+                                padding: isMobile ? 10 : 20,
+                                font: { size: isMobile ? 10 : 12 }
+                            } 
+                        },
                         tooltip: { backgroundColor: '#18181b', titleColor: '#fff', bodyColor: '#a1a1aa', borderColor: '#3f3f46', borderWidth: 1, padding: 12, displayColors: false,
                             callbacks: { label: function(context) { return context.dataset.label + ': ' + context.raw + ' Efor Birimi'; } } }
                     },
                     scales: {
-                        x: { stacked: true, grid: { display: false, drawBorder: false } },
+                        x: { stacked: true, grid: { display: false, drawBorder: false }, ticks: { font: { size: isMobile ? 10 : 12 } } },
                         y: { stacked: true, beginAtZero: true, max: 20, ticks: { display: false }, grid: { color: '#27272a', drawBorder: false } }
                     },
                     interaction: { mode: 'index', intersect: false }
@@ -821,40 +882,39 @@
             showLayerDetails(1);
         });
 
-        // --- TOOLTIP LOGIC ---
+        // --- TOOLTIP LOGIC (Desktop & Touch Support) ---
         const tooltipEl = document.getElementById('global-tooltip');
 
+        function showTooltip(termKey) {
+            if (glossary[termKey]) {
+                tooltipEl.innerHTML = `
+                    <div class="text-[10px] md:text-xs font-mono text-emerald-400 mb-1.5 uppercase tracking-wider font-bold">${termKey.replace('-', ' ')}</div>
+                    <div class="text-xs md:text-[13px] text-zinc-300 leading-relaxed font-light">${glossary[termKey]}</div>
+                `;
+                tooltipEl.classList.add('active');
+            }
+        }
+
+        function hideTooltip() {
+            tooltipEl.classList.remove('active');
+        }
+
+        // Mouse Events (Desktop)
         document.addEventListener('mouseover', (e) => {
             const target = e.target.closest('.term');
             if (target) {
-                const termKey = target.getAttribute('data-term');
-                if (glossary[termKey]) {
-                    // İçeriği güncelle
-                    tooltipEl.innerHTML = `
-                        <div class="text-[10px] font-mono text-emerald-400 mb-1.5 uppercase tracking-wider font-bold">${termKey.replace('-', ' ')}</div>
-                        <div class="text-[13px] text-zinc-300 leading-relaxed font-light">${glossary[termKey]}</div>
-                    `;
-                    // Tooltip'i göster
-                    tooltipEl.style.opacity = '1';
-                    tooltipEl.style.transform = 'translateY(0) scale(1)';
-                }
+                showTooltip(target.getAttribute('data-term'));
             }
         });
 
         document.addEventListener('mousemove', (e) => {
-            if (tooltipEl.style.opacity === '1') {
-                // Mouse'un sağ altına yerleştir
+            if (window.innerWidth >= 768 && tooltipEl.classList.contains('active')) {
                 let x = e.clientX + 15;
                 let y = e.clientY + 15;
                 
-                // Ekran dışına taşmayı engelle
                 const rect = tooltipEl.getBoundingClientRect();
-                if (x + rect.width > window.innerWidth) {
-                    x = e.clientX - rect.width - 15;
-                }
-                if (y + rect.height > window.innerHeight) {
-                    y = e.clientY - rect.height - 15;
-                }
+                if (x + rect.width > window.innerWidth) x = e.clientX - rect.width - 15;
+                if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - 15;
 
                 tooltipEl.style.left = x + 'px';
                 tooltipEl.style.top = y + 'px';
@@ -862,11 +922,21 @@
         });
 
         document.addEventListener('mouseout', (e) => {
-            if (e.target.closest('.term')) {
-                tooltipEl.style.opacity = '0';
-                tooltipEl.style.transform = 'translateY(8px) scale(0.95)';
-            }
+            if (e.target.closest('.term')) hideTooltip();
         });
+
+        // Touch Events (Mobile)
+        document.addEventListener('touchstart', (e) => {
+            const target = e.target.closest('.term');
+            if (target) {
+                // Prevent underlying link/click if any
+                e.preventDefault(); 
+                showTooltip(target.getAttribute('data-term'));
+            } else {
+                // Clicking anywhere else hides the tooltip
+                hideTooltip();
+            }
+        }, { passive: false });
 
     </script>
 </body>
