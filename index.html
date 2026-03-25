@@ -130,6 +130,33 @@
         .glow-text {
             text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
+
+        /* Tooltip & Terminology Styles */
+        #global-tooltip {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            max-width: 260px;
+            background: rgba(9, 9, 11, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            border-radius: 10px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .term {
+            cursor: help;
+            border-bottom: 1px dashed rgba(161, 161, 170, 0.5); /* zinc-400 */
+            color: #d4d4d8; /* zinc-300 */
+            transition: all 0.2s ease;
+        }
+        .term:hover {
+            border-bottom-color: #34d399; /* emerald-400 */
+            color: #34d399;
+        }
     </style>
 </head>
 <body class="flex flex-col md:flex-row min-h-screen text-zinc-300 font-sans selection:bg-white selection:text-black pb-20 md:pb-0">
@@ -162,7 +189,7 @@
                 <span class="text-lg opacity-70">↻</span> Sprint Döngüsü
             </button>
             <button onclick="switchTab('yetenek')" id="nav-yetenek" class="nav-item text-left px-4 py-3 rounded-md text-sm text-zinc-400 hover:text-white font-medium flex items-center gap-3">
-                <span class="text-lg opacity-70">⬡</span> Katman Mimarisi
+                <span class="text-lg opacity-70">⬡</span> Ekip & Mimarisi
             </button>
             <button onclick="switchTab('operasyon')" id="nav-operasyon" class="nav-item text-left px-4 py-3 rounded-md text-sm text-zinc-400 hover:text-white font-medium flex items-center gap-3">
                 <span class="text-lg opacity-70 text-emerald-400">⚡</span> Operasyon Matrisi
@@ -211,7 +238,7 @@
                     Sıfır Kesinti.<br/>Maksimum Kapasite.
                 </h2>
                 <p class="text-lg md:text-xl text-zinc-400 max-w-3xl leading-relaxed font-light">
-                    Müşteri önceliklendirmesi illüzyondur. Tüm markaların elit statüde olduğu bir yapıda tek çözüm <strong class="text-white font-medium">Kesintisiz İş Akışı (Assembly Line)</strong> ve <strong class="text-white font-medium">Toplu İşleme (Batching)</strong> modelidir.
+                    Kişisel inisiyatifler yerini sistematik akışa bırakır. Ajans içerisindeki herkes (Tasarım, Web, Ads, İçerik) <strong class="text-white font-medium">Kesintisiz İş Akışı (<span class="term" data-term="assembly-line">Assembly Line</span>)</strong> modelinde net bir şekilde tanımlanmış rollerle çalışır.
                 </p>
             </header>
 
@@ -221,9 +248,9 @@
                     <div class="text-red-500 text-sm font-mono tracking-widest mb-4">REAKTİF MODEL // PING-PONG</div>
                     <h3 class="text-2xl font-display font-bold text-white mb-6">Kaos & Kilitlenme</h3>
                     <ul class="space-y-4 text-zinc-400">
-                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> Sürekli bölünen odak ve anlık bitmeyen revizyonlar.</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> Sürekli bölünen odak ve departmanlar arası karışıklık (<span class="term" data-term="ping-pong">Ping-Pong</span>).</li>
                         <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> Üretim ekibinin müşteri iletişimiyle vakit ve enerji kaybetmesi.</li>
-                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> "Acil" etiketli işlerin planlı büyümeyi ve kaliteyi baltalaması.</li>
+                        <li class="flex items-start gap-3"><span class="text-red-500 mt-1">⨯</span> "Kritik" etiketli işlerin asıl planlı büyümeyi baltalaması.</li>
                     </ul>
                 </div>
                 <div class="bento-card rounded-2xl p-8 relative overflow-hidden border-zinc-700/50 bg-[#0c0c0e]">
@@ -232,9 +259,9 @@
                     <div class="text-indigo-400 text-sm font-mono tracking-widest mb-4">PROAKTİF MODEL // BATCHING</div>
                     <h3 class="text-2xl font-display font-bold text-white mb-6">Sistematik Akış</h3>
                     <ul class="space-y-4 text-zinc-300">
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Tüm markaların aynı faza aynı anda organize edilmesi.</li>
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Üretim ekibinin tam izolasyonu ve "Deep Work" (Derin Çalışma).</li>
-                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> İletişim, Strateji ve Üretim katmanlarının aşılmaz sınırları.</li>
+                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Roller net ayrışır: <span class="term" data-term="lead">Lead</span>, Dev, <span class="term" data-term="backup">Backup</span>, Asistan.</li>
+                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Üretim ekibinin tam izolasyonu ve "<span class="term" data-term="deep-work">Deep Work</span>" odaklanması.</li>
+                        <li class="flex items-start gap-3"><span class="text-indigo-400 mt-1">✔</span> Filtreler önceliğe değil, "Çalışma Alanına" odaklanır (<span class="term" data-term="batching">Batching</span>).</li>
                     </ul>
                 </div>
             </div>
@@ -247,9 +274,9 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                     Operasyonel Akış
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Aylık Sprint Döngüsü</h2>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Aylık Sprint Döngüsü (Task Matrix)</h2>
                 <p class="text-zinc-400 text-lg max-w-2xl font-light">
-                    Kapasitedeki tüm markalar için 4 kesintisiz evre. Fabrika düzeninde işleyen, öngörülebilir ve hatasız üretim hattı.
+                    Ekibin tüm rolleri, 4 kesintisiz evrede birbiriyle uyumlu çalışacak şekilde ayarlanmıştır.
                 </p>
             </header>
 
@@ -264,11 +291,11 @@
                 </button>
                 <button onclick="selectWeek(3)" id="btn-week-3" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
                     <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 03</div>
-                    <div class="font-display font-bold text-white">Revizyon</div>
+                    <div class="font-display font-bold text-white">QA / Revize</div>
                 </button>
                 <button onclick="selectWeek(4)" id="btn-week-4" class="week-selector flex-1 min-w-[120px] bg-[#0a0a0a] border border-white/10 p-4 rounded-xl text-left cursor-pointer transition-all hover:bg-white/5">
                     <div class="text-xs text-zinc-500 font-mono mb-2">PHASE 04</div>
-                    <div class="font-display font-bold text-white">Yayın</div>
+                    <div class="font-display font-bold text-white">Yayın / Optimize</div>
                 </button>
             </div>
 
@@ -294,33 +321,33 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
                     Organizasyon Mimarisi
                 </div>
-                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Yetenek İzolasyonu</h2>
+                <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Ekip & Katman İzolasyonu</h2>
                 <p class="text-zinc-400 text-lg max-w-2xl font-light">
-                    Tasarım, sosyal medya, yazılım ve performans ayrışmıştır. Ekip 3 sızdırmaz katmanda çalışır.
+                    Tasarım, operasyon ve yazılım alanındaki kesin hiyerarşi. Liderler ve destek ekipleri tanımlanmıştır.
                 </p>
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <div class="lg:col-span-5 flex flex-col gap-3">
                     <button onclick="showLayerDetails(1)" id="layer-btn-1" class="layer-btn active w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-zinc-400"></div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 01</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Strateji, Karar & Özel Üretim</h3>
+                        <h3 class="text-xl font-display font-bold text-white mb-1">Strateji, Karar & Müşteri Hattı</h3>
                         <p class="text-sm text-zinc-400">Sefa & Sema</p>
                     </button>
                     <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-6 bg-white"></div></div>
                     <button onclick="showLayerDetails(2)" id="layer-btn-2" class="layer-btn w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-zinc-600"></div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 02</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Operasyon & Köprü</h3>
-                        <p class="text-sm text-zinc-400">Ahmet</p>
+                        <h3 class="text-xl font-display font-bold text-white mb-1">Yazılım Liderliği & Operasyon</h3>
+                        <p class="text-sm text-zinc-400">Merve (Yazılım Lead) & Ahmet</p>
                     </button>
                     <div class="flex justify-center py-1 opacity-30"><div class="w-[1px] h-6 bg-white"></div></div>
                     <button onclick="showLayerDetails(3)" id="layer-btn-3" class="layer-btn w-full text-left bg-[#0a0a0a] p-6 rounded-xl relative overflow-hidden group">
-                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-zinc-800"></div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
                         <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1">KATMAN 03</div>
-                        <h3 class="text-xl font-display font-bold text-white mb-1">Saf Üretim Hattı</h3>
-                        <p class="text-sm text-zinc-400">Cemal, Merve + Mehmet</p>
+                        <h3 class="text-xl font-display font-bold text-white mb-1">Saf Üretim & Geliştirme</h3>
+                        <p class="text-sm text-zinc-400">Cemal & Mehmet</p>
                     </button>
                 </div>
                 <div class="lg:col-span-7">
@@ -329,7 +356,7 @@
             </div>
         </section>
 
-        <!-- YENİ SECTION: Operasyon Matrisi (Markalar) -->
+        <!-- SECTION 4: Operasyon Matrisi (Markalar) -->
         <section id="sec-operasyon" class="content-section hidden fade-in">
             <header class="mb-8">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[10px] text-emerald-400 tracking-[0.2em] uppercase mb-6">
@@ -338,21 +365,23 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-4">Canlı Operasyon Matrisi</h2>
                 <p class="text-zinc-400 text-lg max-w-3xl font-light">
-                    Sosyal Medya ve Diğer İşler ayrıştırıldı. <strong>Sema (Özel Tasarım)</strong>, <strong>Cemal (Sosyal Medya Tasarım)</strong> ve diğer ekipler otomatik olarak atanır.
+                    Markalar ve ihtiyaçları sistemin çalışma alanlarına (Sosyal Medya, Ads, Web) göre filtrelenerek ekiplere paylaştırılır.
                 </p>
             </header>
 
-            <!-- Filters -->
+            <!-- Filters based on Working Areas -->
             <div class="flex flex-wrap gap-2 mb-8 border-b border-white/10 pb-6">
-                <button onclick="filterClients('all')" class="px-4 py-2 rounded-lg text-sm font-medium bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all">Tümü (23)</button>
-                <button onclick="filterClients('Kritik')" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-red-500/50 hover:text-red-400 transition-all flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-red-500"></span> Kritik
+                <button onclick="filterClients('all')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white border border-white/20 hover:bg-white/20 transition-all">
+                    Tüm Markalar (23)
                 </button>
-                <button onclick="filterClients('Yüksek')" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-orange-500/50 hover:text-orange-400 transition-all flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-orange-500"></span> Yüksek
+                <button onclick="filterClients('Sosyal Medya')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-indigo-500/50 hover:text-indigo-400 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Tasarım & Sosyal Medya
                 </button>
-                <button onclick="filterClients('Normal')" class="px-4 py-2 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-zinc-500/50 hover:text-zinc-300 transition-all flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-zinc-500"></span> Normal
+                <button onclick="filterClients('Reklam & SEO')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-emerald-500/50 hover:text-emerald-400 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Dijital Reklam & SEO
+                </button>
+                <button onclick="filterClients('Web')" class="px-5 py-2.5 rounded-lg text-sm font-medium bg-[#0a0a0a] text-zinc-400 border border-white/10 hover:border-orange-500/50 hover:text-orange-400 transition-all flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-orange-500"></span> Web Geliştirme
                 </button>
             </div>
 
@@ -362,7 +391,7 @@
             </div>
         </section>
 
-        <!-- SECTION 4: Altın Kurallar -->
+        <!-- SECTION 5: Altın Kurallar -->
         <section id="sec-kurallar" class="content-section hidden fade-in">
             <header class="mb-12">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-[10px] text-red-400 tracking-[0.2em] uppercase mb-6">
@@ -371,7 +400,7 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-display font-bold text-white tracking-tight mb-6">Sistem Güvenlik Protokolü</h2>
                 <p class="text-zinc-400 text-lg max-w-2xl font-light">
-                    Fabrika düzeninin çökmemesi için bu 3 kural ajans anayasası olarak kabul edilir. İstisna talep edilemez.
+                    Fabrika düzeninin çökmemesi için bu 3 kural ajans anayasası olarak kabul edilir.
                 </p>
             </header>
 
@@ -381,154 +410,165 @@
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">01</div>
                     <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">Briefsiz İş Yasası</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
-                        Sema'dan onaylı, detayları netleştirilmiş yazılı bir brief olmadan üretim ekibi asla bir piksel veya kod satırı oynatmaz.
+                        Sema'dan onaylı içerik brief'i veya Sefa'dan onaylı bütçe brief'i olmadan üretim (Tasarım/Web) ekibi asla işleme başlamaz.
                     </p>
-                    <div class="pt-4 border-t border-white/10 relative z-10">
-                        <p class="text-[11px] uppercase tracking-wider text-red-400 font-mono">RED LINE: "Şöyle bir şey yaparız" denilemez.</p>
-                    </div>
                 </div>
                 <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">02</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">İletişim Filtresi</h3>
+                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">Müşteri Filtresi</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
-                        Müşterilerin üretim katmanına direkt ulaşması yasaktır. Üretim ekibi tam izolasyondadır. Odak bölünemez.
+                        Müşterilerin tasarım/yazılım katmanına (Cemal, Mehmet, Merve) direkt ulaşması yasaktır. İletişimi Sefa kurar.
                     </p>
-                    <div class="pt-4 border-t border-white/10 relative z-10">
-                        <p class="text-[11px] uppercase tracking-wider text-indigo-400 font-mono">PROXY: Tüm iletişim Strateji/Köprü katmanından geçer.</p>
-                    </div>
                 </div>
                 <div class="bento-card rounded-2xl p-8 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="text-5xl font-display font-bold text-zinc-800 absolute -right-2 -top-4 opacity-50 select-none">03</div>
-                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10">Asenkron İnceleme</h3>
+                    <h3 class="text-xl font-display font-bold text-white mb-4 mt-8 relative z-10"><span class="term" data-term="asenkron">Asenkron</span> İnceleme</h3>
                     <p class="text-zinc-400 text-sm leading-relaxed mb-6 relative z-10">
-                        Tasarımlar veya kodlar tek tek anlık onay istenmez. Revizyon süreci topludur (Batch Review).
+                        Tasarımlar veya kodlar anında atılıp onay istenmez. Revizyon süreçleri leadler (Merve, Sema) tarafından topluca değerlendirilir.
                     </p>
-                    <div class="pt-4 border-t border-white/10 relative z-10">
-                        <p class="text-[11px] uppercase tracking-wider text-emerald-400 font-mono">FORMAT: Belirlenen gün ve saatlerde toplu kontrol yapılır.</p>
-                    </div>
                 </div>
             </div>
         </section>
 
     </main>
 
+    <!-- YENİ: Global Tooltip Alanı -->
+    <div id="global-tooltip"></div>
+
     <!-- Data and Logic -->
     <script>
+        // --- TERMINOLOGY GLOSSARY ---
+        const glossary = {
+            "assembly-line": "Bir işin fabrika üretim bandındaki gibi bir ekipten diğerine kesintisiz, bekleme süresi olmadan aktarılması modeli.",
+            "batching": "Benzer görevleri bir araya toplayıp odağı bölmeden topluca tamamlama stratejisi.",
+            "ping-pong": "Müşteri ile ajans arasında veya ajans içi departmanlar arasında sürekli gidip gelen, enerji tüketen iletişim/revizyon döngüsü.",
+            "lead": "Sürecin ana yöneticisi, son kararı veren ve ekibi yönlendiren sorumlu lider.",
+            "backup": "Ana sorumlu kilitlendiğinde veya izne çıktığında devreye giren, sürece tam hakim destekleyici rol.",
+            "deep-work": "E-posta, toplantı veya mesajlara bakmaksızın, pür dikkat ve yüksek konsantrasyonla yapılan üretim hali.",
+            "sprint": "Belirli bir hedefe ulaşmak için önceden planlanmış, genelde 1 veya 2 haftalık yoğun çalışma periyodu.",
+            "qa": "Quality Assurance (Kalite Kontrol). İşin veya yazılımın canlıya çıkmadan önce ajans içinde son test ve onayı.",
+            "deploy": "Hazırlanan web sitesinin veya uygulamanın yayına (canlı sunucuya) alınması işlemi.",
+            "roas": "Reklam harcamalarından elde edilen gelir oranı (Return on Ad Spend).",
+            "asenkron": "Eşzamanlı olmayan. İletişimin veya revizyonun anında değil, herkesin kendi uygun zamanında topluca yapılması.",
+            "running": "Sosyal medya paylaşımı, günlük bütçe kontrolü, minör içerik girişleri gibi rutin devam eden operasyonlar.",
+            "scale": "Başarılı olan bir reklam kampanyasının veya iş modelinin bütçesinin kârlılığı bozmadan büyütülmesi."
+        };
+
         // --- DATA STORAGE ---
         const reportData = {
             weeks: {
                 1: {
                     phase: "01",
-                    title: "Strateji & Analiz",
-                    goal: "Tüm markaların analizinin yapılıp rotanın çizilmesi. 25 markanın stratejisi kilitlenir.",
-                    output: "Mesai bitiminde tüm markaların neye ihtiyacı olduğu %100 yazılı olarak bellidir.",
+                    title: "Strateji, Toplantı & Analiz",
+                    goal: "Tüm markaların analizi, müşteri toplantıları ve rotanın çizilmesi. Teknik altyapı hazırlığı.",
+                    output: "Mesai bitiminde taslak briefler ve kodlama altyapıları hazır olur.",
                     borderColor: "border-white",
                     tasks: [
-                        { role: "Ahmet", desc: "Veri madenciliği. Ads, SEO, Sosyal Medya ham verilerini çeker ve raporlar." },
-                        { role: "Sefa", desc: "Rapor analizi, bütçe stratejisi güncellemesi ve makro reklam planının netleşmesi." },
-                        { role: "Sema", desc: "Markalar için aylık kreatif brieflerin (içerik/tasarım) oluşturulması. Özel tasarımların konseptlerinin belirlenmesi." },
-                        { role: "Merve + Mehmet", desc: "Teknik denetim. Web hızı/performans testleri ve aylık sprint planının kodlanması." }
+                        { role: "Sefa (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerini yönetir. SEO ve Reklam bütçe analizlerini yapar." },
+                        { role: "Sema (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Tasarım stratejilerini belirler, içerik ve prodüksiyon brieflerini kilitler." },
+                        { role: "Merve (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Yazılım ekibini lead eder, aylık dev-<span class=\"term\" data-term=\"sprint\">sprint</span> planlarını oluşturur. Sema'ya destek (<span class=\"term\" data-term=\"backup\">backup</span>) verir." },
+                        { role: "Ahmet", desc: "Sefa'ya asiste ederek ham veri çekimlerini (raporlama) ve <span class=\"term\" data-term=\"running\">running</span> takiplerini başlatır." },
+                        { role: "Cemal & Mehmet", desc: "Briefler hazırlanırken kreatif tasarım şablonlarının teknik altyapısı ve kodlama ortamları kurulur." }
                     ]
                 },
                 2: {
                     phase: "02",
-                    title: "Deep Work Üretim",
-                    goal: "Sıfır toplantı, gürültüsüz izolasyon. Sadece brief üzerinden kesintisiz üretim.",
-                    output: "İlk tasarımlar, kod iskeletleri ve reklam kurulumları tamamlanmış olarak sıraca bekler.",
+                    title: "<span class=\"term text-white\" data-term=\"deep-work\">Deep Work</span> (Üretim)",
+                    goal: "Stratejiler üzerinden izole ve gürültüsüz üretim.",
+                    output: "İlk tasarımlar, kurumsal kimlikler ve web iskeletleri çıkarılır.",
                     borderColor: "border-zinc-500",
                     tasks: [
-                        { role: "Sema", desc: "Özel tasarımlar, kurumsal kimlik ve premium görsel üretimlerini (Sosyal Medya harici) bizzat yapar." },
-                        { role: "Cemal", desc: "Sosyal medya briefleri üzerinden fabrika modunda tasarım yapar. Revizyon düşünmeden seri üretim gerçekleştirir." },
-                        { role: "Merve + Mehmet", desc: "Sprint planına sadık kalınarak kodlama, backend hazırlıkları ve teknik SEO inşası." },
-                        { role: "Sefa", desc: "Yeni kampanyaların panele kurulumu (Yayın yok, taslakta bekler)." },
-                        { role: "Ahmet", desc: "Çıkan tasarımlar için copywriting ve dijital metin mimarisinin inşası." }
+                        { role: "Sema & Cemal", desc: "Sema ağırlıklı tasarım/prodüksiyon üretir, Cemal ile birlikte kreatif tasarım şablonlarını üretir ve çoğaltır." },
+                        { role: "Merve & Mehmet", desc: "Merve'nin lead'liğinde Mehmet kodlamayı gerçekleştirir, backend/frontend inşası sürer." },
+                        { role: "Sefa", desc: "Reklam kampanyalarının panele kurulumu ve SEO on-page stratejilerinin tespiti." },
+                        { role: "Ahmet", desc: "Üretilen içerik metinlerinin takibi ve operasyonel <span class=\"term\" data-term=\"running\">running</span> devam eder." }
                     ]
                 },
                 3: {
                     phase: "03",
-                    title: "QA & Asenkron Revizyon",
-                    goal: "İç kalite kontrol. Mükemmelleştirme ve filtreleme haftası.",
-                    output: "Tüm varlıklar 'Ready to Publish' (Yayına Hazır) statüsüne çekilir.",
+                    title: "<span class=\"term text-white\" data-term=\"qa\">QA</span> & Revizyon",
+                    goal: "Mükemmelleştirme, hataları ayıklama ve onay alma.",
+                    output: "Tüm işler 'Yayına Hazır' (Ready to <span class=\"term\" data-term=\"deploy\">Deploy</span>) konumundadır.",
                     borderColor: "border-zinc-700",
                     tasks: [
-                        { role: "Sema", desc: "Cemal ve Ahmet'in çıktılarını inceler. Toplu revizyon listesini iletir. Kendi ürettiği tasarımlara son şeklini verir." },
-                        { role: "Cemal", desc: "Sadece Sema'nın filtresinden geçmiş sosyal medya teknik revizyonlarını uygular." },
-                        { role: "Sefa & Sema", desc: "Müşteri onay toplantıları / sunumlar sadece bu haftaya sıkıştırılır." },
-                        { role: "Merve + Mehmet", desc: "Cross-browser testler, mobil uyumluluk ve final güvenlik QA süreçleri." }
+                        { role: "Sema (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Üretilen tüm tasarımların kalite kontrolü (<span class=\"term\" data-term=\"qa\">QA</span>), revize isteklerinin Cemal'e iletilmesi." },
+                        { role: "Merve (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Mehmet'in kodlarının <span class=\"term\" data-term=\"qa\">QA</span> testleri. Sema'ya UI/UX tarafında <span class=\"term\" data-term=\"backup\">backup</span>." },
+                        { role: "Sefa (<span class=\"term\" data-term=\"lead\">Lead</span>)", desc: "Müşteri onay toplantıları ve reklam kurulum onaylarının alınması." },
+                        { role: "Cemal & Mehmet", desc: "Lead'lerden gelen spesifik teknik ve tasarımsal revizyonları uygularlar." }
                     ]
                 },
                 4: {
                     phase: "04",
                     title: "Yayın & Optimizasyon",
-                    goal: "Canlıya alma, mikro ayarlamalar ve finansal kapanış.",
-                    output: "Sistem çalışır durumda. Gelecek ay (Phase 01) için zemin hazır.",
+                    goal: "Projeleri canlıya alma, performans takibi.",
+                    output: "Sistem çalışır durumda ve bir sonraki aya hazırlık başlar.",
                     borderColor: "border-zinc-800",
                     tasks: [
-                        { role: "Ahmet", desc: "Onaylı tüm içeriklerin otomasyon araçlarıyla (Schedule) sisteme yüklenmesi." },
-                        { role: "Sefa", desc: "Canlı reklam takibi, anlık bütçe A/B testi optimizasyonları ve tahsilat takibi." },
-                        { role: "Merve + Mehmet", desc: "Sunucu tarafı deploy işlemleri ve sitelerin canlıya alınması." },
-                        { role: "Sema & Sefa", desc: "Gelecek ayın stratejik risk analizi ve Phase 01 ön hazırlıkları." }
+                        { role: "Ahmet", desc: "Onaylı tüm içeriklerin panellere yüklenmesi ve takvimlendirilmesi (Asistan/Takip)." },
+                        { role: "Sefa", desc: "Reklam optimizasyonları, bütçe <span class=\"term\" data-term=\"scale\">scale</span> işlemleri ve dönüşüm analizi." },
+                        { role: "Merve & Mehmet", desc: "Yazılımların canlı sunuculara <span class=\"term\" data-term=\"deploy\">deploy</span> edilmesi ve canlı testleri." },
+                        { role: "Sema & Cemal", desc: "Yayınlanan prodüksiyonların geri dönüşlerinin okunup yeni ay şablonlarına aktarımı." }
                     ]
                 }
             },
             layers: {
                 1: {
                     number: "01",
-                    title: "Strateji, Karar & Özel Üretim",
-                    mission: "Kalite, karlılık ve vizyonu dikte etmek. Aynı zamanda markaların ana kimlik (premium tasarım) ihtiyaçlarını üretmek.",
+                    title: "Strateji, Karar & Müşteri Hattı",
+                    mission: "Markaların genel performansını, bütçesini, marka dilini ve kreatif vizyonunu dikte etmek.",
                     roles: [
-                        { name: "Sema (Kreatif Vizyon & Premium Tasarım)", desc: "Brief ondan çıkar, iş ondan geçer. Ayrıca Kurumsal Kimlik, Özel Tasarım ve Web Tasarımı gibi üst düzey kreatif işleri bizzat üreterek üretime doğrudan dahil olur." },
-                        { name: "Sefa (Performans & Finans)", desc: "Metriklerin hakimi. Büyüme, ROAS ve nakit akışı. Reklam aklıdır, panel hamallığını katman 2'ye bırakır." }
+                        { name: "Sefa (Müşteri, SEO & Ads <span class=\"term text-white font-bold\" data-term=\"lead\">Lead</span>)", desc: "Müşteri görüşmelerinin yüzü. SEO ve Reklam yönetimini lead eder. Ahmet'i koordine eder." },
+                        { name: "Sema (Tasarım & Strateji <span class=\"term text-white font-bold\" data-term=\"lead\">Lead</span>)", desc: "Ağırlıklı olarak tasarım, prodüksiyon ve içerik üretiminin sahibidir. Cemal ile üretim kalitesini yönetir." }
                     ]
                 },
                 2: {
                     number: "02",
-                    title: "Operasyon & Köprü",
-                    mission: "Ajansın sinir sistemi. Karar mekanizması ile üretim fabrikası arasındaki trafiği yönetmek.",
+                    title: "Yazılım Liderliği & Operasyon Takip",
+                    mission: "Yazılım departmanına liderlik etmek ve yöneticilerin hamallığını alarak operasyonu (<span class=\"term text-zinc-300\" data-term=\"running\">running</span>) asiste etmek.",
                     roles: [
-                        { name: "Ahmet (Hızlandırıcı)", desc: "Operasyon motoru. Raporu o çeker, planlamayı/paylaşımı o kurar. Cemal ve Sefa'nın hamallığını alır." }
+                        { name: "Merve (Yazılım Ekibi Lideri & <span class=\"term text-white font-bold\" data-term=\"backup\">Backup</span>)", desc: "Yazılım ekibini ve geliştirme süreçlerini (Mehmet ile birlikte) bizzat <span class=\"term\" data-term=\"lead\">lead</span> eder. Tasarım/Üretim kilitlendiğinde Sema'ya operasyonel <span class=\"term\" data-term=\"backup\">backup</span> olur." },
+                        { name: "Ahmet (Ops. Asistanı)", desc: "Sefa'nın ekibindedir. <span class=\"term\" data-term=\"running\">Running</span>, raporlama ve içerik takiplerini asiste ederek süreci hızlandırır." }
                     ]
                 },
                 3: {
                     number: "03",
-                    title: "Saf Üretim Hattı",
-                    mission: "Derin çalışma (Deep Work). Sıfır idari iş, sıfır direkt müşteri teması, maksimum kalitede saf üretim.",
+                    title: "Saf Üretim & Geliştirme",
+                    mission: "<span class=\"term text-zinc-300\" data-term=\"deep-work\">Deep Work</span> ile direktifleri dijital varlıklara ve kodlara çevirmek.",
                     roles: [
-                        { name: "Cemal (Sosyal Medya Tasarım Fabrikası)", desc: "Sadece Sema'dan gelen Sosyal Medya brieflerini alır, seri ve yüksek kalitede post/story vb. üretir. Odak sadece budur." },
-                        { name: "Merve + Mehmet (Yazılım Merkezi)", desc: "Görseli/Mimarisi onaylanmış işleri koda döker. Revizyonlar sadece hiyerarşi üzerinden onlara ulaşır." }
+                        { name: "Cemal (Kreatif Tasarımcı)", desc: "Sema ile birlikte kreatif tasarım şablonlarının üretilmesi ve markalara göre çoğaltılması ile ilgilenir." },
+                        { name: "Mehmet (Developer)", desc: "Merve'nin ekibinde yazılımcı. <span class=\"term\" data-term=\"sprint\">Sprintlerdeki</span> web projelerinin backend ve frontend kodlamalarını yapar." }
                     ]
                 }
             },
             clients: [
-                { name: "Neşeli Tır Pazarı", sector: "Otomotiv", services: ["Sosyal Medya", "Web Sitesi"], priority: "Normal" },
-                { name: "Kilna Seramik", sector: "İnşaat / Sanayi", services: ["Tüm Hizmetler"], priority: "Kritik" },
-                { name: "Sare Havuz", sector: "Havuz", services: ["Google Reklam", "Meta Reklam", "SEO", "Sosyal Medya"], priority: "Kritik" },
-                { name: "Enda Dental Diş Kliniği", sector: "Güzellik ve Sağlık", services: ["GEO", "Google Reklam", "SEO", "Web Sitesi"], priority: "Normal" },
-                { name: "Bmotors Ssangyong", sector: "Otomotiv", services: ["Google Reklam", "Meta Reklam", "SEO", "Sosyal Medya"], priority: "Normal" },
-                { name: "Name dent Diş", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "SEO", "Sosyal Medya"], priority: "Normal" },
-                { name: "Poolmar Havuz Ürün E.", sector: "Havuz", services: ["Google Reklam", "Kurumsal Kimlik", "SEO", "Sosyal Medya", "Web Sitesi"], priority: "Normal" },
-                { name: "Dt. Murat Atmaca Diş", sector: "Güzellik ve Sağlık", services: ["Local SEO", "SEO", "Web Sitesi"], priority: "Kritik" },
-                { name: "Meka Petrol", sector: "Otomotiv", services: ["Sosyal Medya"], priority: "Normal" },
-                { name: "Modern Havuz", sector: "Havuz", services: ["Meta Reklam", "Sosyal Medya"], priority: "Normal" },
-                { name: "Muimedya", sector: "Hizmet ve Diğer", services: ["Sosyal Medya"], priority: "Normal" },
-                { name: "Green Art Peyzaj", sector: "İnşaat / Sanayi", services: ["Reklam", "Sosyal Medya"], priority: "Normal" },
-                { name: "Sarnıç Park AVM", sector: "Hizmet ve Diğer", services: ["Sosyal Medya", "Web Tasarımı"], priority: "Normal" },
-                { name: "Bega Savunma", sector: "Savunma", services: ["Planlama"], priority: "Yüksek" },
-                { name: "Bahri Bülbül Tesbih", sector: "Hizmet ve Diğer", services: ["Reklam", "SEO"], priority: "Normal" },
-                { name: "Cankaya Yangın", sector: "İnşaat / Sanayi", services: ["Google Reklam"], priority: "Normal" },
-                { name: "Prive Maison", sector: "İnşaat / Sanayi", services: ["Genel Planlama"], priority: "Normal" },
-                { name: "EcoZero", sector: "İnşaat / Sanayi", services: ["Web Sitesi"], priority: "Normal" },
-                { name: "Düzey Menfez", sector: "İnşaat / Sanayi", services: ["Kurumsal Kimlik", "Web Sitesi"], priority: "Normal" },
-                { name: "Durmaz Invest Ssangyong", sector: "Otomotiv", services: ["Google Reklam", "SEO"], priority: "Kritik" },
-                { name: "Antalya Slimfast Beauty", sector: "Güzellik ve Sağlık", services: ["Meta Reklam"], priority: "Normal" },
-                { name: "Meltem Yılmaz Beauty", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "Meta Reklam"], priority: "Normal" },
-                { name: "HELO Kuaför", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "Meta Reklam"], priority: "Normal" }
+                { name: "Neşeli Tır Pazarı", sector: "Otomotiv", services: ["Sosyal Medya", "Web Sitesi"] },
+                { name: "Kilna Seramik", sector: "İnşaat / Sanayi", services: ["Tüm Hizmetler"] },
+                { name: "Sare Havuz", sector: "Havuz", services: ["Google Reklam", "Meta Reklam", "SEO", "Sosyal Medya"] },
+                { name: "Enda Dental Diş Kliniği", sector: "Güzellik ve Sağlık", services: ["GEO", "Google Reklam", "SEO", "Web Sitesi"] },
+                { name: "Bmotors Ssangyong", sector: "Otomotiv", services: ["Google Reklam", "Meta Reklam", "SEO", "Sosyal Medya"] },
+                { name: "Name dent Diş", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "SEO", "Sosyal Medya"] },
+                { name: "Poolmar Havuz Ürün E.", sector: "Havuz", services: ["Google Reklam", "Kurumsal Kimlik", "SEO", "Sosyal Medya", "Web Sitesi"] },
+                { name: "Dt. Murat Atmaca Diş", sector: "Güzellik ve Sağlık", services: ["Local SEO", "SEO", "Web Sitesi"] },
+                { name: "Meka Petrol", sector: "Otomotiv", services: ["Sosyal Medya"] },
+                { name: "Modern Havuz", sector: "Havuz", services: ["Meta Reklam", "Sosyal Medya"] },
+                { name: "Muimedya", sector: "Hizmet ve Diğer", services: ["Sosyal Medya"] },
+                { name: "Green Art Peyzaj", sector: "İnşaat / Sanayi", services: ["Reklam", "Sosyal Medya"] },
+                { name: "Sarnıç Park AVM", sector: "Hizmet ve Diğer", services: ["Sosyal Medya", "Web Tasarımı"] },
+                { name: "Bega Savunma", sector: "Savunma", services: ["Planlama"] },
+                { name: "Bahri Bülbül Tesbih", sector: "Hizmet ve Diğer", services: ["Reklam", "SEO"] },
+                { name: "Cankaya Yangın", sector: "İnşaat / Sanayi", services: ["Google Reklam"] },
+                { name: "Prive Maison", sector: "İnşaat / Sanayi", services: ["Genel Planlama"] },
+                { name: "EcoZero", sector: "İnşaat / Sanayi", services: ["Web Sitesi"] },
+                { name: "Düzey Menfez", sector: "İnşaat / Sanayi", services: ["Kurumsal Kimlik", "Web Sitesi"] },
+                { name: "Durmaz Invest Ssangyong", sector: "Otomotiv", services: ["Google Reklam", "SEO"] },
+                { name: "Antalya Slimfast Beauty", sector: "Güzellik ve Sağlık", services: ["Meta Reklam"] },
+                { name: "Meltem Yılmaz Beauty", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "Meta Reklam"] },
+                { name: "HELO Kuaför", sector: "Güzellik ve Sağlık", services: ["Google Reklam", "Meta Reklam"] }
             ]
         };
 
-        // --- STATE MANAGEMENT ---
         let currentWeek = 1;
         let effortChartInstance = null;
 
@@ -630,17 +670,11 @@
             `;
         }
 
-        // --- UPDATED: Task Assignment & Visualization based on "Sosyal Medya" vs "Diğer İşler" ---
-        function getPriorityStyle(priority) {
-            if(priority === 'Kritik') return { dot: 'bg-red-500 animate-pulse', text: 'text-red-400', border: 'border-red-500/30' };
-            if(priority === 'Yüksek') return { dot: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500/30' };
-            return { dot: 'bg-zinc-500', text: 'text-zinc-400', border: 'border-white/10' };
-        }
-
+        // --- Area-Based Filtering ---
         function filterClients(filterValue) {
             const btns = document.querySelectorAll('#sec-operasyon button');
             btns.forEach(btn => {
-                if(btn.innerText.includes(filterValue) || (filterValue === 'all' && btn.innerText.includes('Tümü'))) {
+                if(btn.innerText.includes(filterValue) || (filterValue === 'all' && btn.innerText.includes('Tüm'))) {
                     btn.classList.remove('bg-[#0a0a0a]', 'bg-white/10');
                     btn.classList.add('bg-white/20', 'text-white');
                 } else {
@@ -653,81 +687,94 @@
 
         function renderClients(filter = 'all') {
             const container = document.getElementById('clients-grid');
-            let filteredClients = reportData.clients;
-            if(filter !== 'all') {
-                filteredClients = reportData.clients.filter(c => c.priority === filter);
-            }
+            
+            let filteredClients = reportData.clients.filter(c => {
+                if (filter === 'all') return true;
+                const svcs = c.services.map(s => s.toLowerCase());
+                
+                if (filter === 'Sosyal Medya') {
+                    return svcs.some(s => s.includes('sosyal') || s.includes('kimlik') || s.includes('tüm'));
+                }
+                if (filter === 'Reklam & SEO') {
+                    return svcs.some(s => s.includes('reklam') || s.includes('seo') || s.includes('geo') || s.includes('tüm') || s.includes('planlama'));
+                }
+                if (filter === 'Web') {
+                    return svcs.some(s => s.includes('web') || s.includes('tüm'));
+                }
+                return true;
+            });
 
             container.innerHTML = filteredClients.map((client, index) => {
-                const pStyle = getPriorityStyle(client.priority);
-                
-                // Separate Social Media from other services
+                // Determine sections to display
                 const isAll = client.services.some(s => s.toLowerCase().includes('tüm'));
-                const hasSocial = isAll || client.services.some(s => s.toLowerCase().includes('sosyal'));
-                
-                let socialServices = client.services.filter(s => s.toLowerCase().includes('sosyal'));
-                let otherServices = client.services.filter(s => !s.toLowerCase().includes('sosyal'));
+                const hasSocial = isAll || client.services.some(s => s.toLowerCase().includes('sosyal') || s.toLowerCase().includes('kimlik'));
+                const hasAds = isAll || client.services.some(s => s.toLowerCase().includes('reklam') || s.toLowerCase().includes('seo') || s.toLowerCase().includes('geo') || s.toLowerCase().includes('planlama'));
+                const hasWeb = isAll || client.services.some(s => s.toLowerCase().includes('web'));
 
-                if(isAll) {
-                    socialServices = ["Sosyal Medya Yönetimi"];
-                    otherServices = ["Google Reklam", "Meta Reklam", "SEO", "Web Sitesi", "Kurumsal Kimlik"];
+                let blocks = '';
+
+                // Sosyal & Tasarım Blok
+                if (hasSocial) {
+                    blocks += `
+                        <div class="mb-4">
+                            <div class="text-[10px] text-indigo-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Tasarım & Sosyal Medya
+                            </div>
+                            <div class="text-[11px] text-zinc-400 bg-indigo-500/5 p-2 rounded-md border border-indigo-500/10">
+                                <span class="text-white font-medium">Sema</span> (Strateji/Prodüksiyon) <br>
+                                <span class="text-indigo-400">Cemal</span> (Şablon/Tasarım) <br>
+                                <span class="text-zinc-500">Ahmet</span> (Takip)
+                            </div>
+                        </div>`;
                 }
 
-                // Render Blocks Separately
-                let socialBlock = '';
-                if(socialServices.length > 0) {
-                    socialBlock = `
-                        <div class="mb-3">
-                            <div class="text-[10px] text-indigo-400/70 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
-                                <span class="w-1 h-1 rounded-full bg-indigo-500"></span> Sosyal Medya
+                // Reklam & SEO Blok
+                if (hasAds) {
+                    blocks += `
+                        <div class="mb-4">
+                            <div class="text-[10px] text-emerald-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Dijital Reklam & SEO
                             </div>
-                            <div class="flex flex-wrap gap-1.5 mb-2">
-                                ${socialServices.map(s => `<span class="px-2 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded text-[10px] text-indigo-300 font-mono whitespace-nowrap">${s}</span>`).join('')}
+                            <div class="text-[11px] text-zinc-400 bg-emerald-500/5 p-2 rounded-md border border-emerald-500/10">
+                                <span class="text-white font-medium">Sefa</span> (Lead/Müşteri) <br>
+                                <span class="text-emerald-400">Ahmet</span> (Running/Asiste)
                             </div>
-                            <div class="text-[10px] text-zinc-500 flex gap-2">
-                                <span class="text-white">Sema (Brief)</span>•<span class="text-indigo-400">Cemal (Tasarım)</span>•<span class="text-emerald-400">Ahmet (Yayın)</span>
-                            </div>
-                        </div>
-                    `;
+                        </div>`;
                 }
 
-                let otherBlock = '';
-                if(otherServices.length > 0) {
-                    otherBlock = `
-                        <div>
-                            <div class="text-[10px] text-zinc-500 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
-                                <span class="w-1 h-1 rounded-full bg-zinc-500"></span> Diğer Operasyonlar
+                // Web & Yazılım Blok
+                if (hasWeb) {
+                    blocks += `
+                        <div class="mb-2">
+                            <div class="text-[10px] text-orange-400/80 font-mono tracking-widest mb-1.5 uppercase flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> Web Geliştirme
                             </div>
-                            <div class="flex flex-wrap gap-1.5 mb-2">
-                                ${otherServices.map(s => `<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-zinc-300 font-mono whitespace-nowrap">${s}</span>`).join('')}
+                            <div class="text-[11px] text-zinc-400 bg-orange-500/5 p-2 rounded-md border border-orange-500/10">
+                                <span class="text-white font-medium">Merve</span> (Yazılım Lead) <br>
+                                <span class="text-orange-400">Mehmet</span> (Developer) <br>
+                                <span class="text-zinc-500">Sema</span> (Backup/UI)
                             </div>
-                            <div class="text-[10px] text-zinc-500 flex flex-wrap gap-1.5">
-                                <span class="text-white">Sema (Tasarım/Web)</span>
-                                <span class="text-white">Sefa (Ads/SEO)</span>
-                                <span class="text-zinc-500">Merve+Mehmet (Kod)</span>
-                            </div>
-                        </div>
-                    `;
+                        </div>`;
                 }
+
+                const svcsHtml = client.services.map(s => 
+                    `<span class="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-zinc-300 font-mono whitespace-nowrap">${s}</span>`
+                ).join('');
 
                 return `
                     <div class="bento-card rounded-2xl p-6 flex flex-col justify-between client-card" style="animation-delay: ${index * 0.05}s">
                         <div>
-                            <div class="flex justify-between items-start mb-6">
+                            <div class="flex justify-between items-start mb-4">
                                 <div>
                                     <h3 class="text-lg font-display font-bold text-white mb-1 leading-tight">${client.name}</h3>
                                     <p class="text-xs text-zinc-500 font-mono uppercase tracking-wider">${client.sector}</p>
                                 </div>
-                                <div class="flex items-center gap-1.5 px-2 py-1 rounded-md border ${pStyle.border} bg-white/5 shrink-0">
-                                    <span class="w-1.5 h-1.5 rounded-full ${pStyle.dot}"></span>
-                                    <span class="text-[10px] uppercase font-bold tracking-wider ${pStyle.text}">${client.priority}</span>
-                                </div>
                             </div>
-                            
-                            <!-- Services Blocks Separated -->
-                            <div class="flex flex-col gap-3">
-                                ${socialBlock}
-                                ${otherBlock}
+                            <div class="flex flex-wrap gap-1.5 mb-6">
+                                ${svcsHtml}
+                            </div>
+                            <div class="flex flex-col">
+                                ${blocks}
                             </div>
                         </div>
                     </div>
@@ -738,13 +785,13 @@
         function initChart() {
             const ctx = document.getElementById('effortChart').getContext('2d');
             
-            // Güncellenmiş Efor: Sema artık tasarımı da bizzat yaptığı için Katman 1'in Üretim eforu Phase 02'de yüksek tutulmuştur.
+            // Adjusted effort matching the new architecture
             const chartData = {
-                labels: ['Phase 01', 'Phase 02 (Üretim)', 'Phase 03', 'Phase 04'],
+                labels: ['Phase 01', 'Phase 02', 'Phase 03', 'Phase 04'],
                 datasets: [
-                    { label: 'Strateji & Özel Üretim (Sefa/Sema)', data: [10, 7, 8, 5], backgroundColor: '#ffffff', borderRadius: 2 },
-                    { label: 'Operasyon (Ahmet)', data: [6, 4, 4, 10], backgroundColor: '#52525b', borderRadius: 2 },
-                    { label: 'Üretim Fabrikası (Cemal/Yazılım)', data: [2, 10, 6, 2], backgroundColor: '#27272a', borderRadius: 2 }
+                    { label: 'Sefa & Sema (Katman 1)', data: [10, 8, 8, 5], backgroundColor: '#ffffff', borderRadius: 2 },
+                    { label: 'Merve & Ahmet (Katman 2)', data: [6, 6, 8, 8], backgroundColor: '#52525b', borderRadius: 2 },
+                    { label: 'Cemal & Mehmet (Katman 3)', data: [3, 10, 6, 4], backgroundColor: '#27272a', borderRadius: 2 }
                 ]
             };
             Chart.defaults.color = '#a1a1aa';
@@ -772,6 +819,53 @@
         window.addEventListener('DOMContentLoaded', () => {
             selectWeek(1);
             showLayerDetails(1);
+        });
+
+        // --- TOOLTIP LOGIC ---
+        const tooltipEl = document.getElementById('global-tooltip');
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('.term');
+            if (target) {
+                const termKey = target.getAttribute('data-term');
+                if (glossary[termKey]) {
+                    // İçeriği güncelle
+                    tooltipEl.innerHTML = `
+                        <div class="text-[10px] font-mono text-emerald-400 mb-1.5 uppercase tracking-wider font-bold">${termKey.replace('-', ' ')}</div>
+                        <div class="text-[13px] text-zinc-300 leading-relaxed font-light">${glossary[termKey]}</div>
+                    `;
+                    // Tooltip'i göster
+                    tooltipEl.style.opacity = '1';
+                    tooltipEl.style.transform = 'translateY(0) scale(1)';
+                }
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (tooltipEl.style.opacity === '1') {
+                // Mouse'un sağ altına yerleştir
+                let x = e.clientX + 15;
+                let y = e.clientY + 15;
+                
+                // Ekran dışına taşmayı engelle
+                const rect = tooltipEl.getBoundingClientRect();
+                if (x + rect.width > window.innerWidth) {
+                    x = e.clientX - rect.width - 15;
+                }
+                if (y + rect.height > window.innerHeight) {
+                    y = e.clientY - rect.height - 15;
+                }
+
+                tooltipEl.style.left = x + 'px';
+                tooltipEl.style.top = y + 'px';
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('.term')) {
+                tooltipEl.style.opacity = '0';
+                tooltipEl.style.transform = 'translateY(8px) scale(0.95)';
+            }
         });
 
     </script>
