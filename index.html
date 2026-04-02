@@ -188,6 +188,35 @@
                 opacity: 1;
             }
         }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            min-width: 250px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideInRight 0.3s ease forwards;
+            transition: opacity 0.3s ease;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 </head>
 <body class="flex flex-col md:flex-row min-h-screen text-zinc-300 font-sans selection:bg-white selection:text-black pb-24 md:pb-0">
@@ -616,6 +645,9 @@
 
     <!-- YENİ: Global Tooltip Alanı -->
     <div id="global-tooltip"></div>
+    
+    <!-- YENİ: Toast Container -->
+    <div id="toast-container"></div>
 
     <!-- Data and Logic -->
     <script>
@@ -1068,6 +1100,41 @@
             }
         }, { passive: false });
 
+        // --- TOAST NOTIFICATION UTILS (Iframe/Canvas Safe) ---
+        function showToast(message, isError = false) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'bg-red-500' : 'bg-emerald-500'}`;
+            toast.innerHTML = `
+                <span class="text-lg">${isError ? '⚠️' : '✅'}</span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Custom Safe Copy Function (bypasses iframe restrictions)
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed'; // Prevent scrolling to bottom
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('İçerik panoya kopyalandı!');
+            } catch (err) {
+                console.error("Kopyalama hatası:", err);
+                showToast('Kopyalama başarısız oldu.', true);
+            } finally {
+                textarea.remove();
+            }
+        }
+
 
         // --- AI CONTENT GENERATOR & TAB LOGIC ---
         
@@ -1150,8 +1217,9 @@
             }
         }
 
-        // DİKKAT: API Anahtarınızı buraya ekleyin!
-        const apiKey = "AIzaSyAFOLOl_DjVeDitSgoTO-1MsoZDTB5YGIQ"; // Google AI Studio'dan aldığınız API Key buraya gelecek
+        // DİKKAT: API Anahtarı bu alanda BOŞ bırakılmalıdır. 
+        // Canvas (Önizleme) ortamı anahtarı arka planda kendisi sağlar.
+        const apiKey = ""; 
 
         // API İstek Fonksiyonu (Görsel desteği eklendi)
         async function fetchGeminiContent(promptText, base64Image = null, mimeType = null) {
@@ -1200,7 +1268,7 @@
                         await new Promise(resolve => setTimeout(resolve, delays[attempt]));
                         attempt++;
                     } else {
-                        throw new Error(`API hatası: ${response.status} ${response.statusText}`);
+                        throw new Error(`API Hatası (Kod: ${response.status}): ${response.statusText}`);
                     }
                 }
 
@@ -1209,12 +1277,12 @@
                 if (data.candidates && data.candidates.length > 0) {
                     return data.candidates[0].content.parts[0].text;
                 } else {
-                    throw new Error("API'den beklenen içerik gelmedi.");
+                    throw new Error("API'den beklenen içerik formatı gelmedi.");
                 }
 
             } catch (error) {
                 console.error("Gemini API Error:", error);
-                throw error;
+                throw error; // Yakalanıp UI'a yansıtılmak üzere fırlatılır
             }
         }
 
@@ -1340,15 +1408,17 @@
 
                     <!-- AI Sonuç Alanı -->
                     <div class="bg-[#050505] border border-white/10 rounded-2xl p-6 relative shadow-xl">
-                        <div class="absolute -top-3 left-6 flex gap-2">
+                        <div class="absolute -top-3 left-6 flex gap-2 z-20">
                             <span class="bg-indigo-600 text-white text-[10px] px-3 py-1 rounded-full font-mono tracking-wider shadow-lg shadow-indigo-500/30">AI ÜRETİMİ (CANLI)</span>
                             <span class="bg-zinc-800 text-zinc-300 border border-zinc-700 text-[10px] px-3 py-1 rounded-full font-mono tracking-wider">${typeLabel}</span>
                         </div>
                         
                         <div class="mt-4 text-sm text-zinc-300 leading-relaxed formatted-ai-content relative group">
-                            <button onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText); alert('İçerik panoya kopyalandı!');" class="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs flex items-center gap-2">
+                            <!-- Kopyalama Butonu -->
+                            <button onclick="copyToClipboard(this.nextElementSibling.innerText)" class="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-xs flex items-center gap-2 z-10">
                                 <span>📋</span> Tümünü Kopyala
                             </button>
+                            <!-- Üretilen İçerik -->
                             <div>${aiResultText}</div>
                         </div>
                         <style>
@@ -1368,8 +1438,20 @@
                 resultsDiv.classList.add('fade-in');
 
             } catch (error) {
-                // Hata Durumu
-                alert("İçerik üretilirken bir hata oluştu. Lütfen konsolu kontrol edin.");
+                // YENİ: Alert yerine UI üzerinde Hata Durumu Gösterme
+                emptyState.classList.add('hidden');
+                resultsDiv.innerHTML = `
+                    <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 text-center shadow-lg">
+                        <span class="text-4xl mb-4 block">⚠️</span>
+                        <h4 class="text-red-400 font-display font-bold text-lg mb-2">Bağlantı veya API Hatası</h4>
+                        <p class="text-zinc-400 text-sm max-w-md mx-auto mb-4">İçerik üretilirken bir sorun yaşandı. Lütfen görseli veya formu kontrol edip tekrar deneyin.</p>
+                        <div class="bg-black/50 text-red-300 font-mono text-xs p-3 rounded-lg overflow-auto border border-red-500/10 inline-block text-left">
+                            ${error.message}
+                        </div>
+                    </div>
+                `;
+                resultsDiv.classList.remove('hidden');
+                resultsDiv.classList.add('fade-in');
             } finally {
                 // Reset Button
                 btn.innerHTML = originalHtml;
