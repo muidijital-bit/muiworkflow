@@ -518,7 +518,7 @@
             </div>
         </section>
 
-        <!-- SECTION 6: AI İçerik Motoru (YENİ EKLENDİ) -->
+        <!-- SECTION 6: AI İçerik Motoru -->
         <section id="sec-icerik" class="content-section hidden fade-in">
             <header class="mb-8 md:mb-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[10px] text-indigo-400 tracking-[0.2em] uppercase mb-6">
@@ -617,6 +617,16 @@
                                     <option value="1500">Uzun (~1500 Kelime)</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- API Anahtarı Alanı (Github/Dış kullanım için) -->
+                        <div class="pt-4 border-t border-white/10 mt-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-[10px] font-mono text-zinc-500 uppercase">Gemini API Key (Zorunlu)</label>
+                                <span class="text-[9px] bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded">Güvenli</span>
+                            </div>
+                            <input type="password" id="custom-api-key" value="AIzaSyAFOLOl_DjVeDitSgoTO-1MsoZDTB5YGIQ" class="w-full bg-black/50 border border-zinc-800 rounded-lg p-3 text-xs text-zinc-400 focus:outline-none focus:border-indigo-500 transition-colors">
+                            <p class="text-[9px] text-zinc-500 mt-1.5 leading-relaxed">403 Hatasını önlemek için geçerli bir anahtar gereklidir. Github'da çalıştırırken standart model (1.5-flash) kullanılır.</p>
                         </div>
 
                         <button type="submit" id="btn-generate" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 rounded-lg mt-2 transition-colors flex items-center justify-center gap-2">
@@ -1223,7 +1233,16 @@
 
         // API İstek Fonksiyonu (Görsel desteği eklendi)
         async function fetchGeminiContent(promptText, base64Image = null, mimeType = null) {
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            // UI'dan kullanıcının formdaki kendi anahtarını alıyoruz
+            const customKey = document.getElementById('custom-api-key').value.trim();
+            
+            // Github veya harici ortamda kullanıcının anahtarı geçerli olur. Canvas'ta ise arkaplan sistemi çalışır.
+            const activeKey = customKey || apiKey;
+
+            // GitHub kullanımında 403 (Erişim Reddedildi) hatası almamak için herkesin erişimine açık standart '1.5-flash' kullanıyoruz.
+            const modelName = customKey ? "gemini-1.5-flash" : "gemini-2.5-flash-preview-09-2025";
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${activeKey}`;
             
             // Text Promptu
             let parts = [{ text: promptText }];
