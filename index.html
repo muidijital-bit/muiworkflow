@@ -520,10 +520,19 @@
                         <!-- Görsel Yükle (Sadece Sosyal Medyada Görünür) -->
                         <div id="form-group-image">
                             <label class="block text-xs font-mono text-zinc-500 mb-2 uppercase">1. Görsel Yükle</label>
-                            <div class="border-2 border-dashed border-zinc-700 hover:border-indigo-500 transition-colors rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-black/20 group">
-                                <span class="text-3xl mb-2 group-hover:scale-110 transition-transform">📸</span>
-                                <span class="text-sm text-zinc-400 group-hover:text-white transition-colors">Sürükle bırak veya seç</span>
-                                <span class="text-[10px] text-zinc-600 mt-1">Tek veya çoklu görsel (Carousel) desteklenir</span>
+                            <div class="border-2 border-dashed border-zinc-700 hover:border-indigo-500 transition-colors rounded-xl flex flex-col items-center justify-center text-center cursor-pointer bg-black/20 group relative overflow-hidden min-h-[160px]" onclick="document.getElementById('image-input').click()">
+                                <input type="file" id="image-input" accept="image/*" class="hidden" onchange="handleImageSelection(event)">
+                                <div id="image-upload-placeholder" class="p-8 flex flex-col items-center">
+                                    <span class="text-3xl mb-2 group-hover:scale-110 transition-transform">📸</span>
+                                    <span class="text-sm text-zinc-400 group-hover:text-white transition-colors">Tıkla ve görsel seç</span>
+                                    <span class="text-[10px] text-zinc-600 mt-1">Önizleme ve analiz için (JPG, PNG)</span>
+                                </div>
+                                <div id="image-upload-preview" class="hidden absolute inset-0 bg-cover bg-center">
+                                     <div class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity backdrop-blur-sm">
+                                         <span class="text-white text-sm font-medium mb-1">Görsel Seçildi</span>
+                                         <span class="text-zinc-400 text-xs">Değiştirmek için tıkla</span>
+                                     </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1063,6 +1072,10 @@
         // --- AI CONTENT GENERATOR & TAB LOGIC ---
         
         let currentContentType = 'social'; // 'social' veya 'article'
+        
+        // Görsel verilerini tutacak değişkenler
+        let selectedImageBase64 = null;
+        let selectedImageMimeType = null;
 
         function toggleContentType(type) {
             currentContentType = type;
@@ -1112,18 +1125,58 @@
             }
         }
 
+        // Görsel seçildiğinde tetiklenen fonksiyon
+        function handleImageSelection(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    
+                    // Veriyi API'ye gönderebilmek için Base64 formatına ayrıştır
+                    const match = dataUrl.match(/^data:(image\/[a-zA-Z]*);base64,(.*)$/);
+                    if (match) {
+                        selectedImageMimeType = match[1];
+                        selectedImageBase64 = match[2];
+                    }
+                    
+                    // Arayüzü Güncelle
+                    document.getElementById('image-upload-placeholder').classList.add('hidden');
+                    const previewArea = document.getElementById('image-upload-preview');
+                    previewArea.classList.remove('hidden');
+                    previewArea.style.backgroundImage = `url(${dataUrl})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         // DİKKAT: API Anahtarınızı buraya ekleyin!
         const apiKey = ""; // Google AI Studio'dan aldığınız API Key buraya gelecek
 
-        async function fetchGeminiContent(promptText) {
+        // API İstek Fonksiyonu (Görsel desteği eklendi)
+        async function fetchGeminiContent(promptText, base64Image = null, mimeType = null) {
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
+            // Text Promptu
+            let parts = [{ text: promptText }];
+            
+            // Eğer görsel varsa yükleme (Payload) arrayine inlineData olarak ekliyoruz
+            if (base64Image && mimeType) {
+                parts.push({
+                    inlineData: {
+                        mimeType: mimeType,
+                        data: base64Image
+                    }
+                });
+            }
+
             const payload = {
                 contents: [{
-                    parts: [{ text: promptText }]
+                    role: "user",
+                    parts: parts
                 }],
                 systemInstruction: {
-                    parts: [{ text: "Sen profesyonel bir metin yazarı ve ileri seviye SEO uzmanısın. İstenen formatta, belirtilen markaya ve sektöre uygun, 2026 güncel SEO algoritmalarıyla uyumlu içerikler üretmelisin. Formatlamayı her zaman HTML tagleri (<h1>, <h2>, <strong>, <ul>, <p> vs.) kullanarak yap." }]
+                    parts: [{ text: "Sen profesyonel bir metin yazarı ve ileri seviye SEO uzmanısın. İstenen formatta, belirtilen markaya ve sektöre uygun, 2026 güncel SEO algoritmalarıyla uyumlu içerikler üretmelisin. Çıktıdaki formatlamayı her zaman HTML tagleri (<h1>, <h2>, <strong>, <ul>, <p> vs.) kullanarak yap." }]
                 }
             };
 
@@ -1188,8 +1241,13 @@
 
             if (currentContentType === 'social') {
                 const goal = document.getElementById('content-goal').value;
+                
+                // Görsel yüklü mü kontrolü ve prompt'a ekleme
+                const imageContext = selectedImageBase64 ? "Ayrıca, promptla birlikte gönderdiğim görseli analiz et." : "Herhangi bir görsel yüklenmedi, sadece marka verilerine dayanarak içerik üret.";
+
                 prompt = `
                 Lütfen aşağıdaki bilgilere dayanarak bir Instagram gönderi seti hazırla.
+                ${imageContext}
 
                 Marka: ${brand}
                 Sektör: ${sector}
@@ -1211,7 +1269,7 @@
                 <p>(Sektöre uygun hashtagler)</p>
                 
                 <h2>Alt Text (Görsel Açıklaması)</h2>
-                <p>(SEO için tahmini görsel metni)</p>
+                <p>(Eğer görsel yüklediysem, o görsele uygun SEO dostu tahmini alt metin. Yüklemediysem sektörle ilgili genel bir açıklama yaz.)</p>
                 `;
             } else {
                 const topic = document.getElementById('article-topic').value || 'Genel Sektör Değerlendirmesi';
@@ -1253,8 +1311,13 @@
             }
 
             try {
-                // API'yi Çağır
-                const aiResultText = await fetchGeminiContent(prompt);
+                // API'yi Çağır - Sosyal medya modunda görseli de gönder
+                let aiResultText = "";
+                if (currentContentType === 'social') {
+                     aiResultText = await fetchGeminiContent(prompt, selectedImageBase64, selectedImageMimeType);
+                } else {
+                     aiResultText = await fetchGeminiContent(prompt);
+                }
                 
                 emptyState.classList.add('hidden');
                 
